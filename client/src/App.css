@@ -1,0 +1,48 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Kanit', sans-serif;
+}
+
+:root {
+  --100: #fbd3d8;
+  --200: #f8a6b0;
+  --300: #f47a89;
+  --400: #f14d61;
+  --500: #ed213a;
+  --600: #be1a2e;
+  --700: #8e1423;
+  --800: #5f0d17;
+  --900: #2f070c;
+  --101: #ccd3eb;
+  --201: #99a7d7;
+  --301: #677ac4;
+  --401: #344eb0;
+  --501: #01229c;
+  --601: #011b7d;
+  --701: #01145e;
+  --801: #000e3e;
+  --901: #00071f;
+  --bg:#F7F7F7;
+}
+
+
+
+.full_body {
+  background: var(--900); /* fallback for old browsers */
+  background: -webkit-linear-gradient(
+    to right,
+    var(--500),
+    var(--900)
+  ); /* Chrome 10-25, Safari 5.1-6 */
+  background: linear-gradient(
+    to right,
+    var(--500),
+    var(--900)
+  ); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

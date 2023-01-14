@@ -1,0 +1,13 @@
+.field1{
+    border-radius: 10px;
+    background-color: rgb(255, 255, 255);
+    box-shadow: 2.5px 4.33px 15px 0px var(--200);
+    position: relative;
+    padding: 10px 15px;
+    width: 100%;
+    height: 3.4rem;
+    border-radius: 10px;
+    outline: none !important;
+    border: solid 0;
+    margin-bottom: 0;
+}

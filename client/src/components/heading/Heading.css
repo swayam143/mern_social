@@ -1,0 +1,25 @@
+.Heading1{
+    font-size: 60px;
+    font-weight: 600;
+    text-transform: capitalize;
+    line-height: 1.1em;
+    /* letter-spacing: -2.25px; */
+   
+}
+
+@media only screen and  (min-width:767px) and (max-width:1024px){
+    .Heading1{
+        font-size: 55px;    
+    }
+}
+
+
+@media only screen and  (min-width:1025px) and (max-width:1450px){
+    .Heading1{
+        font-size: 50px;    
+    }
+}
+
+@media screen and (max-width:767px){  .Heading1{
+    font-size: 35px;    
+}}

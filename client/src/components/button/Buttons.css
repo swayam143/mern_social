@@ -1,0 +1,72 @@
+.primarybtn {
+  border: 2px solid #fff !important;
+  -webkit-tap-highlight-color: transparent !important;
+  max-width: 150px !important;
+  text-align: center !important;
+  border-radius: 10px !important;
+  padding: 5px 16px !important;
+  display: block !important;
+  margin: 25px auto !important;
+  color: #fff !important;
+  text-decoration: none !important;
+  transition: 0.4s !important;
+  font-size: 16px !important;
+  -webkit-transition: 0.4s !important;
+  background: transparent !important;
+  text-transform: none !important;
+}
+
+.primarybtn:hover {
+  background: #fff !important;
+  color: var(--900) !important;
+  transition: 0.4s !important;
+  -webkit-transition: 0.4s !important;
+}
+.secondry_btn {
+  border: 2px solid var(--500) !important;
+  -webkit-tap-highlight-color: transparent !important;
+  /* max-width: 150px !important; */
+  text-align: center !important;
+  border-radius: 10px !important;
+  padding: 5px 16px !important;
+  display: block !important;
+  /* margin: 25px auto !important; */
+  color: #fff !important;
+  text-decoration: none !important;
+  transition: 0.4s !important;
+  font-size: 16px !important;
+  -webkit-transition: 0.4s !important;
+  background: var(--500) !important;
+  text-transform: none !important;
+}
+
+.secondry_btn:hover {
+  background: var(-900) !important;
+  /* color: var(--900) !important; */
+  transition: 0.4s !important;
+  -webkit-transition: 0.4s !important;
+}
+.third_btn {
+  border: 2px solid var(--501) !important;
+  -webkit-tap-highlight-color: transparent !important;
+  /* max-width: 150px !important; */
+  text-align: center !important;
+  border-radius: 10px !important;
+  padding: 5px 16px !important;
+  display: block !important;
+  /* margin: 25px auto !important; */
+  color: #fff !important;
+  text-decoration: none !important;
+  transition: 0.4s !important;
+  font-size: 16px !important;
+  -webkit-transition: 0.4s !important;
+  background: var(--501) !important;
+  text-transform: none !important;
+}
+
+.third_btn:hover {
+  background: var(-901) !important;
+  /* color: var(--900) !important; */
+  transition: 0.4s !important;
+  -webkit-transition: 0.4s !important;
+}

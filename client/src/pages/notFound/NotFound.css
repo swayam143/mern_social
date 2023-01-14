@@ -1,0 +1,21 @@
+.jp-404,
+.jp-404 p {
+  user-select: none;
+  -webkit-user-select: none;
+  color: #fff;
+}
+
+.jp-404 p {
+  padding: 10px;
+  margin: 20px;
+  text-align: center;
+  color: rgba(255, 255, 255, 0.85);
+}
+.jp-404 h1 {
+  text-align: center;
+}
+.jp-404 h1 span {
+  display: block;
+  /* margin: 20px auto; */
+  font-size: 120px;
+}

@@ -1,0 +1,16 @@
+.login_form{
+    width:400px;
+    max-width: 100%;
+    background:var(--bg);
+    padding:10px;
+    border-radius: 8px;
+}
+.relative{
+    position:relative 
+}
+
+.password_visible{
+    position:absolute !important;
+    top:32px;
+    right:10px
+}
