@@ -13,6 +13,16 @@ app.get("/", (req, res) => {
   res.json({ msg: "Hello" });
 });
 
+//
+//ROUTES
+//
+
+app.use("/api", require("./routes/authRouter"));
+app.use("/api", require("./routes/userRouter"));
+
+//To show images in frontend
+app.use(express.static("public/upload"));
+
 const URI = process.env.MONGODB_URL;
 const port = process.env.PORT || 5000;
 

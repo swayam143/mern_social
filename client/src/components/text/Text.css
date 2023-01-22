@@ -2,3 +2,15 @@
     font-size: 14px;
     font-weight: 400;
 }
+
+
+
+
+    .main_heading{
+        font-size: 20px;
+    }
+
+
+@media only screen and (min-width: 992px)  {  .main_heading{
+    font-size: 25px;
+}}

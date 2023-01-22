@@ -4,6 +4,9 @@
   box-sizing: border-box;
   font-family: 'Kanit', sans-serif;
 }
+.pointer{
+  cursor: pointer;
+}
 
 :root {
   --100: #fbd3d8;
@@ -45,4 +48,19 @@
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+ul {
+  list-style-type: none;
+  margin-top: 0;
+    margin-bottom: 0px;
+    padding-left: 0px;
+}
+h4,h5,p{
+  margin-bottom: 0px;
+}
+
+
+.fs_18{
+  font-size: 18px;
 }

@@ -1,0 +1,88 @@
+.card-container{
+	width: 300px;
+
+	background: #FFF;
+	border-radius: 6px;
+    box-shadow: #ccc 0 5px 16px;
+	overflow: hidden;
+	display: block;
+    margin:30px auto 20px auto;
+
+}
+.upper-container{
+	height: 150px;
+	background: #7F00FF;
+}
+.image-container{
+	background: white;
+
+	height: 80px;
+	border-radius: 50%;
+	padding: 5px;
+    display:flex;
+    justify-content:center
+}
+.user_img{
+	width: 80px !important;
+	height: 80px!important;
+	border-radius: 50%!important;
+	position:relative
+    
+}
+.lower-container{
+
+	background: #FFF;
+	padding: 20px;
+	text-align: center;
+}
+.lower-container h3, h4{
+	box-sizing: border-box;
+	line-height: .6;
+	font-weight: lighter;
+}
+.lower-container h4{
+	color: #7F00FF;
+	opacity: .6;
+	font-weight: bold;
+}
+/* .lower-container p{
+	font-size: 16px;
+	color: gray;
+	margin-bottom: 30px;
+} */
+.lower-container .btn{
+	padding: 12px 20px;
+	background: #7F00FF;
+	border: none;
+	color: white;
+	border-radius: 30px;
+	font-size: 12px;
+	text-decoration: none;
+	font-weight: bold;
+	transition: all .3s ease-in;
+}
+.lower-container .btn:hover{
+	background: transparent;
+	color: #7F00FF;
+	border: 2px solid #7F00FF;
+}
+
+.edit_btn{
+    position: absolute !important; 
+    top:10px;
+    right:10px
+}
+.camer_pr_icon{
+	position:absolute !important;
+	bottom: 0px;
+	right: -10px;	z-index:9999 !important;
+	background: var(--500) !important;
+}
+
+.close_icon{
+	position:absolute !important;
+	bottom: 35px;
+	z-index:9999 !important;
+	right: -10px;
+	background: var(--801) !important;
+}

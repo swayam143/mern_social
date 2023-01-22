@@ -11,3 +11,17 @@
     border: solid 0;
     margin-bottom: 0;
 }
+.field2{
+    border-radius: 6px 6px 6px 6px;
+    border-width: 1px 1px 1px 1px;
+    border-color: #E7E7E7;
+    position: relative;
+    margin: 0;
+    /* padding-left: 40px; */
+    box-shadow: 0 0 0 transparent;
+    padding: 5px 10px 5px 10px;
+    outline: none;
+    font-size: 15px;
+    box-sizing: border-box;
+    width:100%
+}

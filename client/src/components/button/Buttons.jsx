@@ -9,17 +9,34 @@ export const PrimaryButton = ({ title }) => {
   );
 };
 
-export const SecondaryButton = ({ title, classNames }) => {
+export const SecondaryButton = ({ title, classNames, type, onClick }) => {
   return (
-    <Button variant="contained" className={`${classNames} secondry_btn`}>
+    <Button
+      onClick={() =>
+        setTimeout(async () => {
+          onClick();
+        }, 500)
+      }
+      type={type}
+      variant="contained"
+      className={`${classNames} secondry_btn`}
+    >
       {title}
     </Button>
   );
 };
 
-export const ThirdButton = ({ title, classNames }) => {
+export const ThirdButton = ({ title, classNames, onClick }) => {
   return (
-    <Button variant="contained" className={`${classNames} third_btn`}>
+    <Button
+      onClick={() =>
+        setTimeout(async () => {
+          onClick();
+        }, 500)
+      }
+      variant="contained"
+      className={`${classNames} third_btn`}
+    >
       {title}
     </Button>
   );
