@@ -1,12 +1,15 @@
-import { Avatar, IconButton } from "@mui/material";
+import { Avatar, CircularProgress, IconButton } from "@mui/material";
 import { deepPurple } from "@mui/material/colors";
 import React, { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
-import { SecondaryButton } from "../../components/button/Buttons";
+import {
+  PrimaryButton,
+  SecondaryButton,
+} from "../../components/button/Buttons";
 import { FullPageLoader } from "../../components/loader/Loaders";
 import { MainHeading, Text1 } from "../../components/text/Texts";
-import { Error } from "../../components/toast/Toasts";
+import { Error, Success } from "../../components/toast/Toasts";
 import { GET } from "../../constant/RequestAuthService";
 import { UNSECURED } from "../../constant/Util";
 import Zoom from "react-medium-image-zoom";
@@ -14,13 +17,19 @@ import "react-medium-image-zoom/dist/styles.css";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import "./profile.css";
 import EditModal from "./EditModal";
-import { Img_url } from "../../constant";
+import { Base_url, Img_url } from "../../constant";
+import axios from "axios";
+import { isLogin } from "../../redux/authSlice";
 
 const Profile = () => {
   const [open, setOpen] = useState(false);
   const [modal, setModal] = useState(false);
+  const [follow, setFollow] = useState(false);
   const userData = useSelector((state) => state.auth.userData);
+  const [loading, setLoading] = useState(false);
   const { id } = useParams();
+
+  const dispatch = useDispatch();
 
   const [user, setUser] = useState(null);
   useEffect(() => {
@@ -49,25 +58,65 @@ const Profile = () => {
 
   // console.log(user);
 
+  useEffect(() => {
+    if (user && userData) {
+      const isUserFollowed = user?.followers?.find(
+        (item) => item._id === UNSECURED(userData).user._id
+      );
+      if (isUserFollowed) {
+        setFollow(true);
+      } else {
+        setFollow(false);
+      }
+    }
+  }, [user, userData]);
+
+  const followUser = async () => {
+    setLoading(true);
+    const response = await axios.post(`${Base_url}user/${user._id}/follow`, {
+      userId: UNSECURED(userData).user._id,
+    });
+    if (response.status === 200) {
+      setLoading(false);
+      dispatch({ type: isLogin, payload: response.data });
+      await Success(response.data.msg);
+    }
+    setLoading(false);
+  };
+
+  const unfollowUser = async () => {
+    setLoading(true);
+    const response = await axios.post(`${Base_url}user/${user._id}/unfollow`, {
+      userId: UNSECURED(userData).user._id,
+    });
+    if (response.status === 200) {
+      setLoading(false);
+      dispatch({ type: isLogin, payload: response.data });
+      await Error(response.data.msg);
+    }
+    setLoading(false);
+  };
+
+  console.log(user);
+
   return (
     <>
       <div className="card-container relative">
         <div className="">
           <div className="image-container mt-3 mb-2">
-            {/* <img src="profile.jpg" /> */}
-            <Zoom>
-              {user && user.picture !== "" ? (
+            {user && user.picture !== "" ? (
+              <Zoom>
                 <img
                   className="img-fluid user_img"
                   src={`${Img_url}${user?.picture}`}
                   alt="users"
-                />
-              ) : (
-                <Avatar sx={{ bgcolor: deepPurple[500] }}>
-                  {user && user?.fullname?.[0].toUpperCase()}
-                </Avatar>
-              )}
-            </Zoom>
+                />{" "}
+              </Zoom>
+            ) : (
+              <Avatar sx={{ bgcolor: deepPurple[500] }}>
+                {user && user?.fullname?.[0].toUpperCase()}
+              </Avatar>
+            )}
           </div>
         </div>
 
@@ -76,8 +125,26 @@ const Profile = () => {
             <MainHeading title={user?.fullname.toUpperCase()} />
             <p className="fs_18">@{user?.username}</p>
             <p className="fs_14">{user?.email}</p>
-            {UNSECURED(userData).user._id !== id && (
-              <SecondaryButton title="Follow" classNames="mx-auto mt-2" />
+            {loading === true ? (
+              <CircularProgress color="secondary" />
+            ) : (
+              UNSECURED(userData).user._id !== id &&
+              (follow === true ? (
+                <PrimaryButton
+                  onClick={unfollowUser}
+                  title="Following"
+                  sx={{
+                    color: "#000 !important",
+                    margin: "8px auto 0px auto !important",
+                  }}
+                />
+              ) : (
+                <SecondaryButton
+                  title="Follow"
+                  classNames="mx-auto mt-2"
+                  onClick={followUser}
+                />
+              ))
             )}
           </div>
           <div
@@ -90,11 +157,6 @@ const Profile = () => {
           </div>
         </div>
         {UNSECURED(userData).user._id === id && (
-          // <ThirdButton
-          //   title="Details"
-          //   classNames="edit_btn"
-          //   onClick={() => setModal(true)}
-          // />
           <IconButton onClick={() => setModal(true)} className="edit_btn">
             {" "}
             <MoreVertIcon sx={{ color: `var(--601)` }} />

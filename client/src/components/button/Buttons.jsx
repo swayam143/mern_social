@@ -1,9 +1,18 @@
 import "./Buttons.css";
 import Button from "@mui/material/Button";
 
-export const PrimaryButton = ({ title }) => {
+export const PrimaryButton = ({ title, sx, classNames, onClick }) => {
   return (
-    <Button variant="contained" className="primarybtn">
+    <Button
+      onClick={() =>
+        setTimeout(async () => {
+          onClick();
+        }, 500)
+      }
+      sx={sx}
+      variant="contained"
+      className={` ${classNames} primarybtn`}
+    >
       {title}
     </Button>
   );

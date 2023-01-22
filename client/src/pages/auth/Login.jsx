@@ -11,7 +11,7 @@ import { useState } from "react";
 import { POST } from "../../constant/RequestAuthService";
 import { useDispatch } from "react-redux";
 import { isLogin } from "../../redux/authSlice";
-import { Error, Validate } from "../../components/toast/Toasts";
+import { Error, Success, Validate } from "../../components/toast/Toasts";
 // import { UNSECURED } from "../../constant/Util";
 import { FullPageLoader } from "../../components/loader/Loaders";
 import { useNavigate } from "react-router-dom";
@@ -22,6 +22,7 @@ const Login = () => {
   // console.log(userData && UNSECURED(userData));
   const [showPass, setShowPass] = useState(false);
   const [email, setEmail] = useState("");
+
   const [password, setPassword] = useState("");
   const [open, setOpen] = useState(false);
 
@@ -44,6 +45,7 @@ const Login = () => {
         const response = await POST("login", { email, password });
         if (response.status === 200) {
           dispatch({ type: isLogin, payload: response.data });
+          Success(response.data.msg);
           setOpen(false);
           navigate("/");
         } else {

@@ -17,7 +17,10 @@ const userCtrl = {
 
   getUser: async (req, res) => {
     try {
-      const users = await Users.findById(req.params.id).select("-password");
+      const users = await Users.findById(req.params.id)
+        .select("-password")
+        .populate("followers following", "-password");
+
       if (!users) return res.status(400).json({ mssg: "User doesnot exist" });
       res.json({ users });
     } catch (err) {
@@ -69,6 +72,73 @@ const userCtrl = {
       });
     } catch (err) {
       return res.status(500).json({ mssg: "User doesnot exist" });
+    }
+  },
+  follow: async (req, res) => {
+    const { userId } = req.body;
+    try {
+      const user = await Users.find({
+        _id: req.params.id, // the person i want to follow id
+        followers: userId, // my id
+      });
+
+      // console.log(user);
+
+      if (user.length > 0) {
+        res.status(500).json({ mssg: "You followed this user" });
+      } else {
+        //Update in user database which i follow
+        await Users.findOneAndUpdate(
+          { _id: req.params.id },
+          {
+            $push: { followers: userId },
+          },
+          { new: true }
+        );
+
+        //Update in my database which user i follow
+
+        const update_user = await Users.findOneAndUpdate(
+          { _id: userId },
+          {
+            $push: { following: req.params.id },
+          },
+          { new: true }
+        )
+          .select("-password")
+          .populate("followers following", "-password");
+        res.json({ msg: "Followed User", user: update_user });
+      }
+    } catch (err) {
+      return res.status(500).json({ mssg: err.message });
+    }
+  },
+  unfollow: async (req, res) => {
+    const { userId } = req.body;
+    try {
+      //Update in user database which i follow
+      await Users.findOneAndUpdate(
+        { _id: req.params.id },
+        {
+          $pull: { followers: userId },
+        },
+        { new: true }
+      );
+
+      //Update in my database which user i follow
+
+      const update_user = await Users.findOneAndUpdate(
+        { _id: userId },
+        {
+          $pull: { following: req.params.id },
+        },
+        { new: true }
+      )
+        .select("-password")
+        .populate("followers following", "-password");
+      res.json({ msg: "UnFollowed User", user: update_user });
+    } catch (err) {
+      return res.status(500).json({ mssg: err.message });
     }
   },
 };

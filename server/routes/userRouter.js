@@ -25,5 +25,7 @@ const upload = multer({ storage: storage });
 router.post("/search", userCtrl.searchUser);
 router.get("/user/:id", userCtrl.getUser);
 router.post("/update", upload.single("picture"), userCtrl.updateUser);
+router.post("/user/:id/follow", userCtrl.follow);
+router.post("/user/:id/unfollow", userCtrl.unfollow);
 
 module.exports = router;

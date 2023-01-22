@@ -1,5 +1,4 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { Success } from "../components/toast/Toasts";
 import StoredVariables, {
   ClearSession,
   GetSession,
@@ -18,7 +17,7 @@ export const authSlice = createSlice({
   reducers: {
     isLogin: (state, action) => {
       state.userData = SECURED(action.payload);
-      Success(action.payload.msg);
+      // Success(action.payload.msg);
       SetSession(StoredVariables.logindata, SECURED(action.payload));
     },
     logoutUser: (state) => {
