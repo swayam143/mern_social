@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import logo from "../../images/logo.png";
+// import logo from "../../images/logo.png";
 import HomeIcon from "@mui/icons-material/Home";
 import ForumIcon from "@mui/icons-material/Forum";
 import ExploreIcon from "@mui/icons-material/Explore";
@@ -71,7 +71,12 @@ const Navbar = () => {
             className={` ${matches && "py-2 mx-auto"} navbar-brand pointer`}
             onClick={() => navigate("/")}
           >
-            <img src={logo} alt="Bootstrap" width="150" />
+            {/* <img src={logo} alt="Bootstrap" width="150" /> */}
+            <img
+              width="40"
+              src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/f4/BMW_logo_%28gray%29.svg/2048px-BMW_logo_%28gray%29.svg.png"
+              alt="logo"
+            />
           </div>
           <div className={` ${!matches && "mx-3"} flex-grow-1 relative`}>
             <input
@@ -124,7 +129,7 @@ const Navbar = () => {
                 <img
                   style={{ width: "35px", borderRadius: "50%", height: "35px" }}
                   className="img-fluid"
-                  src={`${Img_url}${UNSECURED(userData).user.picture}`}
+                  src={`${Img_url}${UNSECURED(userData).user.picture}  `}
                   alt="users"
                 />
               ) : (

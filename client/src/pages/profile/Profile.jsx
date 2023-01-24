@@ -20,6 +20,8 @@ import EditModal from "./EditModal";
 import { Base_url, Img_url } from "../../constant";
 import axios from "axios";
 import { isLogin } from "../../redux/authSlice";
+import FollowersModal from "./FollwersModal";
+import FollowingModal from "./FollowingModal";
 
 const Profile = () => {
   const [open, setOpen] = useState(false);
@@ -27,6 +29,9 @@ const Profile = () => {
   const [follow, setFollow] = useState(false);
   const userData = useSelector((state) => state.auth.userData);
   const [loading, setLoading] = useState(false);
+  const [followermodal, setFollowerModal] = useState(false);
+  const [followingmodal, setFollowingModal] = useState(false);
+
   const { id } = useParams();
 
   const dispatch = useDispatch();
@@ -97,8 +102,6 @@ const Profile = () => {
     setLoading(false);
   };
 
-  console.log(user);
-
   return (
     <>
       <div className="card-container relative">
@@ -113,7 +116,10 @@ const Profile = () => {
                 />{" "}
               </Zoom>
             ) : (
-              <Avatar sx={{ bgcolor: deepPurple[500] }}>
+              <Avatar
+                className="user_img"
+                sx={{ bgcolor: deepPurple[500], fontSize: "50px" }}
+              >
                 {user && user?.fullname?.[0].toUpperCase()}
               </Avatar>
             )}
@@ -151,9 +157,17 @@ const Profile = () => {
             style={{ gap: "20px" }}
             className="d-flex align-items-center justify-content-center mt-3"
           >
-            <Text1 title={`${user?.followers?.length} Followers`} />
+            <Text1
+              onClick={() => setFollowerModal(true)}
+              classNames="pointer"
+              title={`${user?.followers?.length} Followers`}
+            />
 
-            <Text1 title={`${user?.following?.length} Following`} />
+            <Text1
+              onClick={() => setFollowingModal(true)}
+              classNames="pointer"
+              title={`${user?.following?.length} Following`}
+            />
           </div>
         </div>
         {UNSECURED(userData).user._id === id && (
@@ -165,6 +179,16 @@ const Profile = () => {
       </div>
       <FullPageLoader open={open} setOpen={setOpen} />
       <EditModal modal={modal} setModal={setModal} user={user} />
+      <FollowersModal
+        followermodal={followermodal}
+        setFollowerModal={setFollowerModal}
+        user={user}
+      />
+      <FollowingModal
+        followingmodal={followingmodal}
+        setFollowingModal={setFollowingModal}
+        user={user}
+      />
     </>
   );
 };

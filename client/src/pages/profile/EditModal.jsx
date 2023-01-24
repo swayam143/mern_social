@@ -80,13 +80,13 @@ export default function EditModal({ modal, setModal }) {
     e.preventDefault();
 
     const checkdata = {
-      mobile: "required|digits_between:10,13",
-      address: "required",
-      fullname: "required",
-      username: "required",
-      gender: "required",
-      website: "required",
-      story: "required",
+      mobile: "digits_between:10,13",
+      // address: "required",
+      // fullname: "required",
+      // username: "required",
+      // gender: "required",
+      // website: "required",
+      // story: "required",
     };
 
     const validation = new Validator(data, checkdata);

@@ -72,6 +72,7 @@ const RootRoute = () => {
               userData === null ? <Navigate replace to="/login" /> : <Profile />
             }
           />
+
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>

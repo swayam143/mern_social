@@ -7,7 +7,7 @@ const userCtrl = {
     try {
       const users = await Users.find({ username: { $regex: search } })
         .limit(10)
-        .select("fullname username avatar");
+        .select("fullname username picture");
 
       res.json({ users });
     } catch (err) {
@@ -55,7 +55,9 @@ const userCtrl = {
           story: story,
         },
         { new: true }
-      );
+      )
+        .select("-password")
+        .populate("followers following", "-password");
 
       const access_token = jwt.sign(
         { id: users._id },
@@ -124,8 +126,6 @@ const userCtrl = {
         },
         { new: true }
       );
-
-      //Update in my database which user i follow
 
       const update_user = await Users.findOneAndUpdate(
         { _id: userId },

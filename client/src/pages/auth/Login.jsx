@@ -22,7 +22,6 @@ const Login = () => {
   // console.log(userData && UNSECURED(userData));
   const [showPass, setShowPass] = useState(false);
   const [email, setEmail] = useState("");
-
   const [password, setPassword] = useState("");
   const [open, setOpen] = useState(false);
 
