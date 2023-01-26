@@ -20,6 +20,7 @@ app.get("/", (req, res) => {
 app.use("/api", require("./routes/authRouter"));
 app.use("/api", require("./routes/userRouter"));
 app.use("/api", require("./routes/postRouter"));
+app.use("/api", require("./routes/commentRouter"));
 
 //To show images in frontend
 app.use(express.static("public/upload"));

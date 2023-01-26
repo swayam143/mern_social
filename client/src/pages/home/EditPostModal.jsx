@@ -12,7 +12,7 @@ import Validator from "validatorjs";
 import { Success, Validate } from "../../components/toast/Toasts";
 import axios from "axios";
 import { Base_url, Img_url } from "../../constant";
-import { addNewPost } from "../../redux/postSlice";
+import { updatePost } from "../../redux/postSlice";
 import { useDispatch } from "react-redux";
 
 const style = {
@@ -36,6 +36,9 @@ export default function EditPostModal({ open, setOpen, postData }) {
   const [previousPicture, setPreviousPicture] = React.useState("");
   const dispatch = useDispatch();
 
+  // const indV = useSelector((state) => state.post.indexV);
+  // console.log(indV);
+
   React.useEffect(() => {
     setContent(postData?.content);
     setPreviousPicture(postData?.picture);
@@ -50,15 +53,20 @@ export default function EditPostModal({ open, setOpen, postData }) {
     setImages(null);
   };
 
+  // console.log(images);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     const checkdata = {
       content: "required",
-      picture: "required",
+      // picture: "required",
     };
 
-    const validation = new Validator({ content, picture: images }, checkdata);
+    const validation = new Validator(
+      { content, picture: images ? images : postData?.picture },
+      checkdata
+    );
 
     if (validation.fails()) {
       Validate(validation);
@@ -66,16 +74,25 @@ export default function EditPostModal({ open, setOpen, postData }) {
       try {
         const uploadData = new FormData();
         uploadData.append("content", content);
-        uploadData.append("picture", images);
+        uploadData.append("postId", postData._id);
+        uploadData.append("picture", images ? images : postData?.picture);
 
-        const response = await axios.post(`${Base_url}posts`, uploadData);
+        const response = await axios.post(
+          `${Base_url}updatedposts`,
+          uploadData
+        );
         if (response.status === 200) {
-          handleClose();
-          dispatch({ type: addNewPost, payload: response.data.newPost });
+          // console.log(response.data);
           Success(response.data.msg);
-          setFile(null);
+          dispatch({ type: updatePost, payload: response.data.upDatedPost });
+          handleClose();
           setContent("");
+          setImages(null);
+          setPreviousPicture("");
+          // dispatch({ type: addNewPost, payload: response.data.newPost });
 
+          // setFile(null);
+          // setContent("");
           // getPosts();
         } else {
           Error(response.status.msg);

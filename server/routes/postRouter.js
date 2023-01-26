@@ -21,6 +21,8 @@ const upload = multer({ storage: storage });
 
 router.post("/posts", upload.single("picture"), postCtrl.createPost);
 router.get("/posts/:id", postCtrl.getPosts);
-router.post("/updatedposts", postCtrl.updatePost);
+router.post("/updatedposts", upload.single("picture"), postCtrl.updatePost);
+router.post("/likePost", postCtrl.likePost);
+router.post("/unlikePost", postCtrl.unlikePost);
 
 module.exports = router;
