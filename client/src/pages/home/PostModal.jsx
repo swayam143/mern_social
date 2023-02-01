@@ -132,7 +132,12 @@ export default function PostModal({ open, setOpen, user }) {
                   sx={{ color: `var(--801)`, float: "right" }}
                 />
                 <Zoom>
-                  <img src={file} alt="file" className="img-fluid " />
+                  <img
+                    src={file}
+                    alt="file"
+                    className="img-fluid "
+                    style={{ maxHeight: "300px" }}
+                  />
                 </Zoom>
               </div>
             )}

@@ -35,9 +35,10 @@ export const SecondaryButton = ({ title, classNames, type, onClick }) => {
   );
 };
 
-export const ThirdButton = ({ title, classNames, onClick }) => {
+export const ThirdButton = ({ title, classNames, onClick, sx }) => {
   return (
     <Button
+      sx={sx}
       onClick={() =>
         setTimeout(async () => {
           onClick();

@@ -21,6 +21,7 @@ import axios from "axios";
 import { TextFields2 } from "../../components/textField/Textfields";
 import { ThirdButton } from "../../components/button/Buttons";
 import Comments from "./Comments";
+import { Success } from "../../components/toast/Toasts";
 
 const Posts = ({ user }) => {
   const { getPosts } = useHomeFunctanility();
@@ -32,6 +33,7 @@ const Posts = ({ user }) => {
   const [contentVal, setContentVal] = useState("");
 
   const allPosts = useSelector((state) => state.post.allPosts);
+  // console.log(allPosts);
 
   useEffect(() => {
     getPosts(user);
@@ -86,18 +88,22 @@ const Posts = ({ user }) => {
       user,
       createdAt: new Date().toISOString(),
     };
-    const findpostIndex = allPosts.findIndex((item) => item._id === post._id);
-    dispatch({ type: addComment, payload: { newComment, findpostIndex } });
-    setContent("");
-    await axios.post(`${Base_url}comment`, {
-      postId: post._id,
-      content,
-      user: user._id,
-    });
-    // console.log(response);
+    if (content === "") {
+      Success("Please enter a valid comment");
+    } else {
+      const findpostIndex = allPosts.findIndex((item) => item._id === post._id);
+      dispatch({ type: addComment, payload: { newComment, findpostIndex } });
+      setContent("");
+      await axios.post(`${Base_url}comment`, {
+        postId: post._id,
+        content,
+        user: user._id,
+      });
+      // console.log(response);
+    }
   };
 
-  // console.log(allPosts);
+  console.log(allPosts);
   return (
     <div>
       {allPosts && typeof allPosts === "object" ? (

@@ -84,6 +84,102 @@ export const postSlice = createSlice({
 
       state.allPosts = allPost;
     },
+    likeComment: (state, action) => {
+      const allPost = [...state.allPosts];
+      const checkedArray = allPost.map((x) => {
+        const valuesChangeCheck = x._id === action.payload.postId;
+
+        if (valuesChangeCheck) {
+          const findIndex = x.comments.findIndex(
+            (item) => item._id === action.payload.data._id
+          );
+          // console.log(user, x.comments);
+          if (findIndex !== -1) {
+            const isLikeExist = x.comments[findIndex].likes.find(
+              (item) => item._id === action.payload.user._id
+            );
+
+            if (isLikeExist) {
+              x.comments[findIndex] = {
+                ...x.comments[findIndex],
+                likes: [
+                  ...x.comments[findIndex].likes.filter(
+                    (item) => item._id !== action.payload.user._id
+                  ),
+                ],
+              };
+            } else {
+              x.comments[findIndex] = {
+                ...x.comments[findIndex],
+                likes: [...x.comments[findIndex].likes, action.payload.user],
+              };
+            }
+
+            // console.log(clonedObject);
+
+            // clonedObject = { ...clonedObject, content: "value" };
+          }
+        }
+
+        return x;
+      });
+
+      state.allPosts = checkedArray;
+    },
+    upDateComment: (state, action) => {
+      const allPost = [...state.allPosts];
+      const checkedArray = allPost.map((x) => {
+        const valuesChangeCheck = x._id === action.payload.postId;
+
+        if (valuesChangeCheck) {
+          const findIndex = x.comments.findIndex(
+            (item) => item._id === action.payload.data._id
+          );
+          // console.log(user, x.comments);
+          if (findIndex !== -1) {
+            x.comments[findIndex] = {
+              ...x.comments[findIndex],
+              content: action.payload.content,
+            };
+
+            // console.log(clonedObject);
+
+            // clonedObject = { ...clonedObject, content: "value" };
+          }
+        }
+
+        return x;
+      });
+
+      state.allPosts = checkedArray;
+    },
+    replyComments: (state, action) => {
+      const allPost = [...state.allPosts];
+      const checkedArray = allPost.map((x) => {
+        const valuesChangeCheck = x._id === action.payload.postId;
+
+        if (valuesChangeCheck) {
+          const findIndex = x.comments.findIndex(
+            (item) => item._id === action.payload.data._id
+          );
+          // console.log(user, x.comments);
+          if (findIndex !== -1) {
+            x.comments[findIndex] = {
+              ...x.comments[findIndex],
+              reply: [...x.comments[findIndex].reply, action.payload.user],
+            };
+
+            // console.log(clonedObject);
+
+            // clonedObject = { ...clonedObject, content: "value" };
+          }
+        }
+
+        return x;
+      });
+
+      state.allPosts = checkedArray;
+    },
   },
 });
 
@@ -95,6 +191,9 @@ export const {
   unlikePost,
   addComment,
   likedReply,
+  likeComment,
+  upDateComment,
+  replyComments,
 } = postSlice.actions;
 
 export default postSlice.reducer;

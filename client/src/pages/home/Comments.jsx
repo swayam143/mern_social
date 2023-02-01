@@ -4,14 +4,19 @@ import React from "react";
 import Zoom from "react-medium-image-zoom";
 import "react-medium-image-zoom/dist/styles.css";
 import { Text1 } from "../../components/text/Texts";
-import { Img_url } from "../../constant";
+import { Base_url, Img_url } from "../../constant";
 import moment from "moment";
 import { useState } from "react";
 import AllCommentModal from "./AllCommentModal";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import EditCommentModal from "./EditCommentModal";
-import { useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
+import { likeComment, replyComments } from "../../redux/postSlice";
+import FavoriteIcon from "@mui/icons-material/Favorite";
+import axios from "axios";
+import { TextFields2 } from "../../components/textField/Textfields";
+import { ThirdButton } from "../../components/button/Buttons";
 // import axios from "axios";
 
 const Comments = ({ comments, moreComm, user, postId }) => {
@@ -20,42 +25,22 @@ const Comments = ({ comments, moreComm, user, postId }) => {
   const [drop, setDrop] = useState("");
   const [dataChange, setDataChange] = useState(false);
   const [modalData, setModalData] = useState([]);
-  const allPosts = useSelector((state) => state.post.allPosts);
+  const [reply, setReply] = useState(null);
+
+  const dispatch = useDispatch();
 
   const handleLike = async (data) => {
-    let allNewPost = [...allPosts];
-    // console.log(postId);
-
-    const checkedArray = allNewPost.map((x) => {
-      const valuesChangeCheck = x._id === postId;
-      // console.log(valuesChangeCheck);
-
-      if (valuesChangeCheck) {
-        const findIndex = x.comments.findIndex((item) => item._id === user._id);
-        console.log(user, x.comments);
-        if (findIndex !== -1) {
-          console.log(findIndex);
-
-          x.comments[findIndex] = {
-            ...x.comments[findIndex],
-            content: "dfdg",
-          };
-          // console.log(clonedObject);
-
-          // clonedObject = { ...clonedObject, content: "value" };
-        }
-      }
-
-      return x;
-
-      // setDat([...dat, x]);
+    dispatch({ type: likeComment, payload: { postId, data, user } });
+    await axios.post(`${Base_url}likeUnlike`, {
+      commentId: data._id,
+      user: user._id,
     });
-
-    // setDat(checkedArray);
-    console.log(checkedArray);
   };
 
-  // console.log(allPosts);
+  const replyComment = async (data) => {
+    dispatch({ type: replyComments, payload: { postId, data, user } });
+  };
+  // dispatch({ type: likeComment, payload: { postId, data, user } });
 
   const editCmmment = (data) => {
     setModalData(data);
@@ -63,6 +48,7 @@ const Comments = ({ comments, moreComm, user, postId }) => {
     setDataChange(!dataChange);
   };
 
+  // console.log(reply);
   return (
     <div>
       {comments?.length > 0 &&
@@ -109,65 +95,104 @@ const Comments = ({ comments, moreComm, user, postId }) => {
                   />
                   <div
                     style={{ padding: "10px" }}
-                    className="post_img_container  d-flex align-items-center justify-content-between flex-wrap"
+                    className="post_img_container"
                   >
-                    <div>
-                      <p className="fs_12">{data?.content}</p>
+                    <div className="  d-flex align-items-center justify-content-between flex-wrap">
+                      <div>
+                        <p className="fs_12">{data?.content}</p>
+                        <div
+                          style={{ gap: "10px" }}
+                          className="d-flex align-items-center"
+                        >
+                          <p className="fs_10">
+                            {" "}
+                            {moment(data.createdAt).fromNow()}
+                          </p>
+                          <Text1 title={`${data?.likes?.length} likes`} />
+                          <Text1
+                            classNames="pointer"
+                            title={`Reply`}
+                            onClick={() =>
+                              setReply(reply === data._id ? null : data._id)
+                            }
+                          />
+                        </div>
+                      </div>
+
                       <div
-                        style={{ gap: "10px" }}
-                        className="d-flex align-items-center"
+                        style={{ flexGrow: 1 }}
+                        className=" d-flex align-items-center justify-content-end"
                       >
-                        <p className="fs_10">
-                          {" "}
-                          {moment(data.createdAt).fromNow()}
-                        </p>
-                        <Text1 title={`${data?.likes?.length} likes`} />
-                        <Text1 title={`Reply`} />
+                        {data.likes.find((item) => item._id === user._id) ? (
+                          <FavoriteIcon
+                            onClick={() => handleLike(data)}
+                            sx={{ fontSize: "1em", color: "red" }}
+                            className="pointer "
+                          />
+                        ) : (
+                          <FavoriteBorderIcon
+                            // onClick={() => dispatch({ type: comm })}
+                            onClick={() => handleLike(data)}
+                            sx={{ fontSize: "1em" }}
+                            className="pointer "
+                          />
+                        )}
+
+                        {user?._id === data?.user?._id && (
+                          <div
+                            className="relative"
+                            onClick={() => setDrop(drop === "" ? data._id : "")}
+                          >
+                            <MoreVertIcon
+                              style={{ marginTop: "-4px" }}
+                              sx={{ fontSize: "1em" }}
+                              className="pointer ms-2"
+                            />
+                            {drop === data._id && (
+                              <div
+                                style={{ width: "73px" }}
+                                className="drop_details"
+                              >
+                                <Text1
+                                  onClick={
+                                    () => editCmmment(data)
+                                    // setEdit(true)
+                                  }
+                                  classNames="pointer my-2"
+                                  title="Edit "
+                                />
+
+                                <Text1
+                                  onClick={() => console.log("hy")}
+                                  classNames="pointer my-2"
+                                  title="Remove "
+                                />
+                              </div>
+                            )}
+                          </div>
+                        )}
                       </div>
                     </div>
-                    <div
-                      style={{ flexGrow: 1 }}
-                      className=" d-flex align-items-center justify-content-end"
-                    >
-                      <FavoriteBorderIcon
-                        // onClick={() => dispatch({ type: comm })}
-                        onClick={() => handleLike(data)}
-                        sx={{ fontSize: "1em" }}
-                        className="pointer "
-                      />
-                      {user?._id === data?.user?._id && (
-                        <div
-                          className="relative"
-                          onClick={() => setDrop(drop === "" ? data._id : "")}
-                        >
-                          <MoreVertIcon
-                            sx={{ fontSize: "1em" }}
-                            className="pointer ms-2"
-                          />
-                          {drop === data._id && (
-                            <div
-                              style={{ width: "73px" }}
-                              className="drop_details"
-                            >
-                              <Text1
-                                onClick={
-                                  () => editCmmment(data)
-                                  // setEdit(true)
-                                }
-                                classNames="pointer my-2"
-                                title="Edit "
-                              />
-
-                              <Text1
-                                onClick={() => console.log("hy")}
-                                classNames="pointer my-2"
-                                title="Remove "
-                              />
-                            </div>
-                          )}
-                        </div>
-                      )}
-                    </div>
+                    {reply === data._id && (
+                      <div
+                        style={{ gap: "10px" }}
+                        className="mt-2 d-flex align-items-center flex-wrap"
+                      >
+                        <TextFields2
+                          // onClick={() => setContentVal(data._id)}
+                          // value={contentVal === data._id ? content : ""}
+                          // onChange={(e) => setContent(e.target.value)}
+                          placeholder="Reply here..."
+                          // onClick={() => setOpen(true)}
+                        />{" "}
+                        <ThirdButton
+                          classNames="ms-auto"
+                          title="Reply"
+                          type="submit"
+                          onClick={() => replyComment(data)}
+                        />
+                      </div>
+                    )}
                   </div>
                   {comments?.length > 1 && (
                     <Text1
@@ -195,6 +220,7 @@ const Comments = ({ comments, moreComm, user, postId }) => {
         modalData={modalData}
         dataChange={dataChange}
         postId={postId}
+        user={user}
       />
     </div>
   );

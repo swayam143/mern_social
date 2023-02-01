@@ -4,8 +4,11 @@ import { Modal } from "@mui/material";
 import { TextArea1 } from "../../components/textField/Textfields";
 import { SecondaryButton } from "../../components/button/Buttons";
 import Validator from "validatorjs";
-import { Validate } from "../../components/toast/Toasts";
-import { useSelector } from "react-redux";
+import { Success, Validate } from "../../components/toast/Toasts";
+import { useDispatch } from "react-redux";
+import { upDateComment } from "../../redux/postSlice";
+import axios from "axios";
+import { Base_url } from "../../constant";
 
 const style = {
   position: "absolute",
@@ -26,19 +29,21 @@ export default function EditCommentModal({
   modalData,
   dataChange,
   postId,
+  user,
 }) {
   const [content, setContent] = React.useState("");
-  const [newAllPost, setNewAllPost] = React.useState([]);
   const handleClose = () => setEdit(false);
+  // console.log(user);
 
-  const allPosts = useSelector((state) => state.post.allPosts);
-  //   console.log(allPosts);
+  //user:user._id, commentId:modalData._id
 
   React.useEffect(() => {
     if (modalData) {
       setContent(modalData?.content);
     }
   }, [dataChange]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  const dispatch = useDispatch();
 
   const handleSubmit = async () => {
     const checkdata = {
@@ -50,36 +55,19 @@ export default function EditCommentModal({
     if (validation.fails()) {
       Validate(validation);
     } else {
-      //
-      //Find index of pparticular post
-      //
-      const findpostIndex = allPosts.findIndex((item) => item._id === postId);
-      //
-      //Find index of particular comment
-      //
-      //   const findcommIndex = allPosts[findpostIndex].comments.findIndex(
-      //     (item) => item._id === modalData._id
-      //   );
-
-      const newAllPost = [...allPosts];
-
-      const checkedArray = newAllPost.map((x) => {
-        const valuesChangeCheck = x._id === postId;
-        if (valuesChangeCheck) {
-          x.comments.map((data) => {
-            const valuesChangeCheck = data._id === modalData._id;
-
-            if (valuesChangeCheck) {
-              data.content = "fgdg";
-              console.log(data);
-            }
-            return data;
-          });
-        }
-        return x;
+      dispatch({
+        type: upDateComment,
+        payload: { postId, data: modalData, user, content },
       });
-      console.log(checkedArray);
-      setNewAllPost(checkedArray);
+      const response = await axios.post(`${Base_url}updatecomment`, {
+        commentId: modalData._id,
+        content,
+        user: user._id,
+      });
+      if ((response.status = 200)) {
+        Success(response.data.mssg);
+        handleClose();
+      }
     }
   };
 
