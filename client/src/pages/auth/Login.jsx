@@ -42,6 +42,7 @@ const Login = () => {
     } else {
       try {
         const response = await POST("login", { email, password });
+        // console.log(response);
         if (response.status === 200) {
           dispatch({ type: isLogin, payload: response.data });
           Success(response.data.msg);

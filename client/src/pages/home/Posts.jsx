@@ -15,17 +15,21 @@ import ChatBubbleOutlineIcon from "@mui/icons-material/ChatBubbleOutline";
 import IosShareIcon from "@mui/icons-material/IosShare";
 import BookmarkBorderIcon from "@mui/icons-material/BookmarkBorder";
 import EditPostModal from "./EditPostModal";
-import { likePost, unlikePost } from "../../redux/postSlice";
+import { addComment, likePost, unlikePost } from "../../redux/postSlice";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import axios from "axios";
 import { TextFields2 } from "../../components/textField/Textfields";
 import { ThirdButton } from "../../components/button/Buttons";
+import Comments from "./Comments";
 
 const Posts = ({ user }) => {
   const { getPosts } = useHomeFunctanility();
   const [drop, setDrop] = useState("");
   const [edit, setEdit] = useState(false);
   const [postData, setPostData] = useState(null);
+  const [content, setContent] = useState("");
+  const [moreComm, setMoreComm] = useState(false);
+  const [contentVal, setContentVal] = useState("");
 
   const allPosts = useSelector((state) => state.post.allPosts);
 
@@ -73,13 +77,27 @@ const Posts = ({ user }) => {
     }
   };
 
-  console.log(allPosts);
+  // console.log(allPosts);
 
-  const handleComment = (e) => {
-    e.preventDefault();
-    console.log("hy");
+  const handleComment = async (post) => {
+    const newComment = {
+      content,
+      likes: [],
+      user,
+      createdAt: new Date().toISOString(),
+    };
+    const findpostIndex = allPosts.findIndex((item) => item._id === post._id);
+    dispatch({ type: addComment, payload: { newComment, findpostIndex } });
+    setContent("");
+    await axios.post(`${Base_url}comment`, {
+      postId: post._id,
+      content,
+      user: user._id,
+    });
+    // console.log(response);
   };
 
+  // console.log(allPosts);
   return (
     <div>
       {allPosts && typeof allPosts === "object" ? (
@@ -207,7 +225,10 @@ const Posts = ({ user }) => {
                         </div>
                       )}
 
-                      <div className="icon_div">
+                      <div
+                        onClick={() => setMoreComm(!moreComm)}
+                        className="icon_div"
+                      >
                         <ChatBubbleOutlineIcon />
                       </div>
                       <div className="icon_div">
@@ -226,21 +247,37 @@ const Posts = ({ user }) => {
                         classNames="pointer"
                         title={` ${data.likes.length} likes`}
                       />
-                      <Text1 classNames="pointer" title="0 comments" />
+                      <Text1
+                        classNames="pointer"
+                        title={` ${data.comments.length} comments`}
+                      />
                     </div>
                   </div>
 
                   <form
-                    onSubmit={handleComment}
                     style={{ gap: "10px" }}
                     className="mt-2 d-flex align-items-center"
                   >
                     <TextFields2
+                      onClick={() => setContentVal(data._id)}
+                      value={contentVal === data._id ? content : ""}
+                      onChange={(e) => setContent(e.target.value)}
                       placeholder="Comment"
                       // onClick={() => setOpen(true)}
                     />
-                    <ThirdButton title="Post" type="submit" />
+                    <ThirdButton
+                      title="Post"
+                      type="submit"
+                      onClick={() => handleComment(data)}
+                    />
                   </form>
+                  <Comments
+                    user={user}
+                    postId={data._id}
+                    comments={data.comments}
+                    moreComm={moreComm}
+                    setMoreComm={setMoreComm}
+                  />
                 </div>
               ))}
           </>
@@ -256,3 +293,19 @@ const Posts = ({ user }) => {
 };
 
 export default Posts;
+
+//
+// const findpostInd = state.allPosts.findIndex(
+//   (item) => item._id === post._id
+// );
+// const allPost = [...state.allPosts];
+
+// allPost[findpostInd] = {
+//   ...allPost[findpostInd],
+//   comment: [
+//     ...allPost[findpostInd].comment,
+//     newComment,
+//   ],
+// // const newData = { ...post, comments: [...post.comments, newComment] };
+// // console.log(newData);
+// },

@@ -2,10 +2,10 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: 'Kanit', sans-serif;
-  transition:.2s linear;
+  font-family: "Kanit", sans-serif;
+  transition: 0.2s linear;
 }
-.pointer{
+.pointer {
   cursor: pointer;
 }
 
@@ -28,10 +28,8 @@
   --701: #01145e;
   --801: #000e3e;
   --901: #00071f;
-  --bg:#F7F7F7;
+  --bg: #f7f7f7;
 }
-
-
 
 .full_body {
   background: var(--900); /* fallback for old browsers */
@@ -54,14 +52,23 @@
 ul {
   list-style-type: none;
   margin-top: 0;
-    margin-bottom: 0px;
-    padding-left: 0px;
+  margin-bottom: 0px;
+  padding-left: 0px;
 }
-h4,h5,p{
+h4,
+h5,
+p {
   margin-bottom: 0px;
 }
 
-
-.fs_18{
+.fs_18 {
   font-size: 18px;
+}
+
+.fs_12 {
+  font-size: 12px;
+}
+
+.fs_10 {
+  font-size: 10px;
 }

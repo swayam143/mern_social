@@ -1,8 +1,8 @@
 import "./Text.css";
 
-export const Text1 = ({ title, classNames, onClick }) => {
+export const Text1 = ({ title, classNames, onClick, style }) => {
   return (
-    <p onClick={onClick} className={`${classNames} text1`}>
+    <p style={style} onClick={onClick} className={`${classNames} text1`}>
       {title}
     </p>
   );

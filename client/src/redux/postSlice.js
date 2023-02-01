@@ -56,10 +56,45 @@ export const postSlice = createSlice({
 
       state.allPosts = allPost;
     },
+    addComment: (state, action) => {
+      const allPost = [...state.allPosts];
+      // console.log(action.payload);
+
+      allPost[action.payload.findpostIndex] = {
+        ...allPost[action.payload.findpostIndex],
+        comments: [
+          ...allPost[action.payload.findpostIndex].comments,
+          action.payload.newComment,
+        ],
+      };
+
+      state.allPosts = allPost;
+    },
+    likedReply: (state, action) => {
+      const allPost = [...state.allPosts];
+      // console.log(action.payload);
+
+      allPost[action.payload.findpostIndex] = {
+        ...allPost[action.payload.findpostIndex],
+        likes: [
+          ...allPost[action.payload.findpostIndex].likes,
+          action.payload.user,
+        ],
+      };
+
+      state.allPosts = allPost;
+    },
   },
 });
 
-export const { getAllPost, addNewPost, updatePost, likePost, unlikePost } =
-  postSlice.actions;
+export const {
+  getAllPost,
+  addNewPost,
+  updatePost,
+  likePost,
+  unlikePost,
+  addComment,
+  likedReply,
+} = postSlice.actions;
 
 export default postSlice.reducer;

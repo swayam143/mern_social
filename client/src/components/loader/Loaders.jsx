@@ -15,7 +15,7 @@ export const FullPageLoader = ({ open, setOpen }) => {
       open={open}
       onClick={handleClose}
     >
-      <img src={loading} alt="loading" />
+      <img src={loading} alt="loading" style={{ width: "60px" }} />
     </Backdrop>
   );
 };

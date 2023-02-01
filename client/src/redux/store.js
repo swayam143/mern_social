@@ -3,10 +3,7 @@ import authSlice from "./authSlice";
 import postSlice from "./postSlice";
 
 export const store = configureStore({
-  reducer: {
-    auth: authSlice,
-    post: postSlice,
-  },
+  reducer: { auth: authSlice, post: postSlice },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
       serializableCheck: false,

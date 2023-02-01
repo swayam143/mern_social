@@ -1,12 +1,13 @@
 const Comments = require("../models/commentModel");
+const Posts = require("../models/postModel");
 
 const commentCtrl = {
   createComment: async (req, res) => {
     try {
-      const { userId, postId, content, tag, reply } = req.body;
+      const { user, postId, content, tag, reply } = req.body;
 
       const newComment = new Comments({
-        user: userId,
+        user: user,
         content,
         tag,
         reply,
@@ -16,7 +17,7 @@ const commentCtrl = {
       //Adding comments in post by finding post by id
       //
 
-      await postMessage.findByIdAndUpdate(
+      await Posts.findByIdAndUpdate(
         postId,
         {
           $push: { comments: newComment._id },

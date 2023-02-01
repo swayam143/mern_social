@@ -31,8 +31,14 @@ const postCtrl = {
       const posts = await Posts.find({
         user: [...users.following, req.params.id],
       })
-        .populate("user", "username fullname picture")
-        .populate("likes", "username fullname picture");
+        .populate("user likes", "username fullname picture")
+        .populate({
+          path: "comments",
+          populate: {
+            path: "user likes",
+            select: "username fullname picture",
+          },
+        });
 
       res.json({ msg: "Success", result: posts.length, posts });
     } catch (err) {
