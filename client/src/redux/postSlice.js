@@ -11,6 +11,15 @@ export const postSlice = createSlice({
   reducers: {
     getAllPost: (state, action) => {
       state.allPosts = action.payload;
+      // const newPost = [...action.payload];
+      // const checkedArray = newPost.map((x, i) => {
+      //   x.comments[i] = {
+      //     ...x.comments[i],
+      //     reply: [],
+      //   };
+      //   return x;
+      // });
+      // state.allPosts = checkedArray;
     },
     addNewPost: (state, action) => {
       state.allPosts = [...state.allPosts, action.payload];
@@ -56,6 +65,19 @@ export const postSlice = createSlice({
 
       state.allPosts = allPost;
     },
+    deleteComments: (state, action) => {
+      const allPost = [...state.allPosts];
+      // console.log(action.payload);
+
+      allPost[action.payload.findpostIndex] = {
+        ...allPost[action.payload.findpostIndex],
+        comments: allPost[action.payload.findpostIndex].comments.filter(
+          (item) => item._id !== action.payload.data._id
+        ),
+      };
+
+      state.allPosts = allPost;
+    },
     addComment: (state, action) => {
       const allPost = [...state.allPosts];
       // console.log(action.payload);
@@ -84,6 +106,7 @@ export const postSlice = createSlice({
 
       state.allPosts = allPost;
     },
+    //
     likeComment: (state, action) => {
       const allPost = [...state.allPosts];
       const checkedArray = allPost.map((x) => {
@@ -153,6 +176,32 @@ export const postSlice = createSlice({
 
       state.allPosts = checkedArray;
     },
+    upDateReplyComment: (state, action) => {
+      const allPost = [...state.allPosts];
+      const checkedArray = allPost.map((x) => {
+        const valuesChangeCheck = x._id === action.payload.postId;
+
+        if (valuesChangeCheck) {
+          const findIndex = x.comments.findIndex(
+            (item) => item._id === action.payload.commentId._id
+          );
+          // console.log(user, x.comments);
+          if (findIndex !== -1) {
+            const findContentIndex = x.comments[findIndex].reply.findIndex(
+              (y) => y._id === action.payload.data._id
+            );
+            x.comments[findIndex].reply[findContentIndex] = {
+              ...x.comments[findIndex].reply[findContentIndex],
+              content: action.payload.content,
+            };
+          }
+        }
+
+        return x;
+      });
+
+      state.allPosts = checkedArray;
+    },
     replyComments: (state, action) => {
       const allPost = [...state.allPosts];
       const checkedArray = allPost.map((x) => {
@@ -166,7 +215,15 @@ export const postSlice = createSlice({
           if (findIndex !== -1) {
             x.comments[findIndex] = {
               ...x.comments[findIndex],
-              reply: [...x.comments[findIndex].reply, action.payload.user],
+              reply: [
+                {
+                  user: action.payload.user,
+                  content: action.payload.content,
+                  createdAt: new Date().toISOString(),
+                  frontendId: action.payload.frontendId,
+                },
+                ...x.comments[findIndex].reply,
+              ],
             };
 
             // console.log(clonedObject);
@@ -194,6 +251,8 @@ export const {
   likeComment,
   upDateComment,
   replyComments,
+  deleteComments,
+  upDateReplyComment,
 } = postSlice.actions;
 
 export default postSlice.reducer;

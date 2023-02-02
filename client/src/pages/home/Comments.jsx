@@ -11,12 +11,19 @@ import AllCommentModal from "./AllCommentModal";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import EditCommentModal from "./EditCommentModal";
-import { useDispatch } from "react-redux";
-import { likeComment, replyComments } from "../../redux/postSlice";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  deleteComments,
+  likeComment,
+  replyComments,
+} from "../../redux/postSlice";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import axios from "axios";
 import { TextFields2 } from "../../components/textField/Textfields";
 import { ThirdButton } from "../../components/button/Buttons";
+import { Error } from "../../components/toast/Toasts";
+import EditReplyCommentModal from "./EditReplyComment";
+
 // import axios from "axios";
 
 const Comments = ({ comments, moreComm, user, postId }) => {
@@ -26,6 +33,10 @@ const Comments = ({ comments, moreComm, user, postId }) => {
   const [dataChange, setDataChange] = useState(false);
   const [modalData, setModalData] = useState([]);
   const [reply, setReply] = useState(null);
+  const allPosts = useSelector((state) => state.post.allPosts);
+  const [content, setContent] = useState("");
+  const [editReply, setEditReply] = useState(false);
+  const [commentId, setCommentId] = useState("");
 
   const dispatch = useDispatch();
 
@@ -38,7 +49,20 @@ const Comments = ({ comments, moreComm, user, postId }) => {
   };
 
   const replyComment = async (data) => {
-    dispatch({ type: replyComments, payload: { postId, data, user } });
+    if (content.toLowerCase().replace(/ /g, "") === "") {
+      Error("Please enter a valid content");
+    } else {
+      dispatch({
+        type: replyComments,
+        payload: { postId, data, user, content },
+      });
+      await axios.post(`${Base_url}replyComment`, {
+        content,
+        commentId: data._id,
+        user: user._id,
+      });
+      setContent("");
+    }
   };
   // dispatch({ type: likeComment, payload: { postId, data, user } });
 
@@ -47,8 +71,26 @@ const Comments = ({ comments, moreComm, user, postId }) => {
     setEdit(true);
     setDataChange(!dataChange);
   };
+  const editReplyCmmment = ({ data, item }) => {
+    // console.log(data, item);
+    setCommentId(data);
+    setModalData(item);
+    setEditReply(true);
+    setDataChange(!dataChange);
+  };
 
   // console.log(reply);
+
+  const deleteComment = async (data) => {
+    const findpostIndex = allPosts.findIndex((item) => item._id === postId);
+    dispatch({ type: deleteComments, payload: { findpostIndex, data } });
+
+    await axios.post(`${Base_url}deleteComment`, {
+      commentId: data._id,
+    });
+  };
+
+  // console.log(allPosts);
   return (
     <div>
       {comments?.length > 0 &&
@@ -111,7 +153,7 @@ const Comments = ({ comments, moreComm, user, postId }) => {
                           <Text1 title={`${data?.likes?.length} likes`} />
                           <Text1
                             classNames="pointer"
-                            title={`Reply`}
+                            title={`${data?.reply?.length || "0"} Reply`}
                             onClick={() =>
                               setReply(reply === data._id ? null : data._id)
                             }
@@ -123,7 +165,7 @@ const Comments = ({ comments, moreComm, user, postId }) => {
                         style={{ flexGrow: 1 }}
                         className=" d-flex align-items-center justify-content-end"
                       >
-                        {data.likes.find((item) => item._id === user._id) ? (
+                        {data?.likes?.find((item) => item._id === user._id) ? (
                           <FavoriteIcon
                             onClick={() => handleLike(data)}
                             sx={{ fontSize: "1em", color: "red" }}
@@ -163,7 +205,7 @@ const Comments = ({ comments, moreComm, user, postId }) => {
                                 />
 
                                 <Text1
-                                  onClick={() => console.log("hy")}
+                                  onClick={() => deleteComment(data)}
                                   classNames="pointer my-2"
                                   title="Remove "
                                 />
@@ -173,6 +215,102 @@ const Comments = ({ comments, moreComm, user, postId }) => {
                         )}
                       </div>
                     </div>
+                    {data?.reply?.length > 0 &&
+                      data.reply.slice(0, 1).map((item, i) => (
+                        <div key={i}>
+                          {" "}
+                          <hr className="my-2" />
+                          <div className="  d-flex align-items-center justify-content-between flex-wrap">
+                            <div style={{ gap: "10px" }} className="d-flex ">
+                              {" "}
+                              {item && item?.user?.picture !== "" ? (
+                                <Zoom>
+                                  <img
+                                    style={{
+                                      width: "20px",
+                                      height: "20px",
+                                      borderRadius: "50%",
+                                    }}
+                                    className="img-fluid "
+                                    src={` ${Img_url}${
+                                      item &&
+                                      (item?.user?._id === user?._id ||
+                                        item?.user === user._id)
+                                        ? user?.picture
+                                        : item?.user?.picture
+                                    }`}
+                                    alt="users"
+                                  />{" "}
+                                </Zoom>
+                              ) : (
+                                <Avatar sx={{ bgcolor: deepPurple[500] }}>
+                                  {item &&
+                                  (item?.user?._id === user?._id ||
+                                    item?.user === user._id)
+                                    ? user?.fullname?.[0].toUpperCase()
+                                    : item?.user?.fullname?.[0].toUpperCase()}
+                                </Avatar>
+                              )}
+                              <div>
+                                <Text1
+                                  title={
+                                    item &&
+                                    (item?.user?._id === user?._id ||
+                                      item?.user === user._id)
+                                      ? user?.fullname
+                                      : item?.user?.fullname
+                                  }
+                                />
+                                <p className="fs_12">{item?.content}</p>
+                                <div
+                                  style={{ gap: "10px" }}
+                                  className="d-flex align-items-center"
+                                >
+                                  <p className="fs_10">
+                                    {" "}
+                                    {moment(item.createdAt).fromNow()}
+                                  </p>
+                                </div>
+                              </div>
+                            </div>
+                            {user?._id === item?.user?._id && (
+                              <div
+                                className="relative"
+                                onClick={() =>
+                                  setDrop(drop === "" ? item._id : "")
+                                }
+                              >
+                                <MoreVertIcon
+                                  style={{ marginTop: "-4px" }}
+                                  sx={{ fontSize: "1em" }}
+                                  className="pointer ms-2"
+                                />
+                                {drop === item._id && (
+                                  <div
+                                    style={{ width: "73px" }}
+                                    className="drop_details"
+                                  >
+                                    <Text1
+                                      onClick={
+                                        () => editReplyCmmment({ data, item })
+                                        // setEdit(true)
+                                      }
+                                      classNames="pointer my-2"
+                                      title="Edit "
+                                    />
+
+                                    <Text1
+                                      onClick={() => deleteComment(data)}
+                                      classNames="pointer my-2"
+                                      title="Remove "
+                                    />
+                                  </div>
+                                )}
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      ))}
                     {reply === data._id && (
                       <div
                         style={{ gap: "10px" }}
@@ -180,8 +318,8 @@ const Comments = ({ comments, moreComm, user, postId }) => {
                       >
                         <TextFields2
                           // onClick={() => setContentVal(data._id)}
-                          // value={contentVal === data._id ? content : ""}
-                          // onChange={(e) => setContent(e.target.value)}
+                          value={content}
+                          onChange={(e) => setContent(e.target.value)}
                           placeholder="Reply here..."
                           // onClick={() => setOpen(true)}
                         />{" "}
@@ -194,7 +332,8 @@ const Comments = ({ comments, moreComm, user, postId }) => {
                       </div>
                     )}
                   </div>
-                  {comments?.length > 1 && (
+                  {(comments?.length > 1 ||
+                    comments?.[0]?.reply?.length > 1) && (
                     <Text1
                       onClick={() => setOpen(true)}
                       style={{ color: `var(--600)`, textAlign: "right" }}
@@ -221,6 +360,17 @@ const Comments = ({ comments, moreComm, user, postId }) => {
         dataChange={dataChange}
         postId={postId}
         user={user}
+      />
+      <EditReplyCommentModal
+        edit={editReply}
+        setEdit={setEditReply}
+        comments={comments}
+        setModalData={setModalData}
+        modalData={modalData}
+        dataChange={dataChange}
+        postId={postId}
+        user={user}
+        commentId={commentId}
       />
     </div>
   );

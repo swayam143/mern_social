@@ -82,28 +82,37 @@ const Posts = ({ user }) => {
   // console.log(allPosts);
 
   const handleComment = async (post) => {
-    const newComment = {
-      content,
-      likes: [],
-      user,
-      createdAt: new Date().toISOString(),
-    };
     if (content === "") {
       Success("Please enter a valid comment");
     } else {
       const findpostIndex = allPosts.findIndex((item) => item._id === post._id);
-      dispatch({ type: addComment, payload: { newComment, findpostIndex } });
-      setContent("");
-      await axios.post(`${Base_url}comment`, {
+
+      const response = await axios.post(`${Base_url}comment`, {
         postId: post._id,
         content,
         user: user._id,
       });
-      // console.log(response);
+      if (response.status === 200) {
+        const newComment = {
+          content,
+          likes: [],
+          user,
+          reply: [],
+          createdAt: new Date().toISOString(),
+          _id: response.data.newComment._id,
+        };
+        dispatch({
+          type: addComment,
+          payload: {
+            newComment,
+            findpostIndex,
+          },
+        });
+        setContent("");
+      }
     }
   };
 
-  console.log(allPosts);
   return (
     <div>
       {allPosts && typeof allPosts === "object" ? (

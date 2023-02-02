@@ -41,6 +41,23 @@ const commentCtrl = {
       return res.status(500).json({ msg: err.message });
     }
   },
+  updateReplyComment: async (req, res) => {
+    try {
+      const { content, replyId } = req.body;
+
+      const updteReply = await Comments.updateMany(
+        { "reply._id": replyId },
+        {
+          $set: {
+            "reply.$.content": content,
+          },
+        }
+      );
+      res.json({ msg: "Updated Successfully" });
+    } catch (err) {
+      return res.status(500).json({ msg: err.message });
+    }
+  },
   likeComment: async (req, res) => {
     try {
       const { commentId, user } = req.body;
@@ -64,6 +81,41 @@ const commentCtrl = {
       );
 
       res.json({ mssg: " Liked Comment" });
+    } catch (err) {
+      return res.status(500).json({ msg: err.message });
+    }
+  },
+  replyComment: async (req, res) => {
+    try {
+      const { commentId, user, content, frontendId } = req.body;
+      const comment = await Comments.findByIdAndUpdate(commentId, {
+        $push: { reply: [{ content, user }] },
+      });
+      // console.log(comment);
+
+      return res.status(200).json({ msg: " UnLiked Comment" });
+    } catch (err) {
+      return res.status(500).json({ msg: err.message });
+    }
+  },
+  deleteComment: async (req, res) => {
+    try {
+      const { commentId } = req.body;
+      //
+      //Delete comment from comment Modal
+      //
+      await Comments.findByIdAndDelete(commentId);
+
+      //
+      //Delete commentId from User Modal
+      //
+
+      await Posts.findOneAndUpdate(
+        { comments: commentId },
+        { $pull: { comments: commentId } }
+      );
+
+      res.json({ mssg: "Comment Deleted" });
     } catch (err) {
       return res.status(500).json({ msg: err.message });
     }

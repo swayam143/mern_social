@@ -35,7 +35,7 @@ const postCtrl = {
         .populate({
           path: "comments",
           populate: {
-            path: "user likes",
+            path: "user likes reply reply.user",
             select: "username fullname picture",
           },
         });
