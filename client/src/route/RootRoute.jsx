@@ -10,6 +10,7 @@ import Message from "../pages/message/Message";
 import Discover from "../pages/discover/Discover";
 import Notify from "../pages/notify/Notify";
 import Profile from "../pages/profile/Profile";
+import PostDetails from "../pages/postDetails.jsx/PostDetails";
 
 const RootRoute = () => {
   const userData = useSelector((state) => state.auth.userData);
@@ -72,6 +73,7 @@ const RootRoute = () => {
               userData === null ? <Navigate replace to="/login" /> : <Profile />
             }
           />
+          <Route path="/post/:id" element={<PostDetails />} />
 
           <Route path="*" element={<NotFound />} />
         </Routes>

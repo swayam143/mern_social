@@ -9,6 +9,7 @@ import { useDispatch } from "react-redux";
 import { upDateComment } from "../../redux/postSlice";
 import axios from "axios";
 import { Base_url } from "../../constant";
+import { upDateParticularPostComment } from "../../redux/particularPostSlice";
 
 const style = {
   position: "absolute",
@@ -30,6 +31,7 @@ export default function EditCommentModal({
   dataChange,
   postId,
   user,
+  moreComm,
 }) {
   const [content, setContent] = React.useState("");
   const handleClose = () => setEdit(false);
@@ -55,10 +57,6 @@ export default function EditCommentModal({
     if (validation.fails()) {
       Validate(validation);
     } else {
-      dispatch({
-        type: upDateComment,
-        payload: { postId, data: modalData, user, content },
-      });
       const response = await axios.post(`${Base_url}updatecomment`, {
         commentId: modalData._id,
         content,
@@ -67,6 +65,17 @@ export default function EditCommentModal({
       if ((response.status = 200)) {
         Success(response.data.mssg);
         handleClose();
+      }
+      if (moreComm === true) {
+        dispatch({
+          type: upDateParticularPostComment,
+          payload: { data: modalData, user, content },
+        });
+      } else {
+        dispatch({
+          type: upDateComment,
+          payload: { postId, data: modalData, user, content },
+        });
       }
     }
   };

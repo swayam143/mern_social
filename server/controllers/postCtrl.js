@@ -38,9 +38,29 @@ const postCtrl = {
             path: "user likes reply reply.user",
             select: "username fullname picture",
           },
+          options: { sort: { createdAt: -1 } },
         });
 
       res.json({ msg: "Success", result: posts.length, posts });
+    } catch (err) {
+      return res.status(500).json({ mssg: err.message });
+    }
+  },
+  detailPost: async (req, res) => {
+    try {
+      const posts = await Posts.findById(req.params.id)
+        .populate("user likes", "username fullname picture")
+        .populate({
+          path: "comments",
+
+          populate: {
+            path: "user likes reply reply.user",
+            select: "username fullname picture",
+          },
+          options: { sort: { createdAt: -1 } },
+        });
+      // .aggregate({ $sort: { createdAt: 1 } });
+      res.json({ posts });
     } catch (err) {
       return res.status(500).json({ mssg: err.message });
     }

@@ -72,7 +72,7 @@ export default function EditReplyCommentModal({
       }
     }
   };
-  console.log(modalData);
+  // console.log(modalData);
 
   // console.log(newAllPost);
   return (

@@ -14,6 +14,7 @@ import axios from "axios";
 import { Base_url, Img_url } from "../../constant";
 import { updatePost } from "../../redux/postSlice";
 import { useDispatch } from "react-redux";
+import { updateParticularPost } from "../../redux/particularPostSlice";
 
 const style = {
   position: "absolute",
@@ -82,18 +83,21 @@ export default function EditPostModal({ open, setOpen, postData }) {
           uploadData
         );
         if (response.status === 200) {
-          // console.log(response.data);
+          console.log(response.data.upDatedPost);
           Success(response.data.msg);
-          dispatch({ type: updatePost, payload: response.data.upDatedPost });
+          dispatch({
+            type: updatePost,
+            payload: response.data.upDatedPost,
+          });
+
           handleClose();
+          dispatch({
+            type: updateParticularPost,
+            payload: response.data.upDatedPost,
+          });
           setContent("");
           setImages(null);
           setPreviousPicture("");
-          // dispatch({ type: addNewPost, payload: response.data.newPost });
-
-          // setFile(null);
-          // setContent("");
-          // getPosts();
         } else {
           Error(response.status.msg);
         }
@@ -122,7 +126,7 @@ export default function EditPostModal({ open, setOpen, postData }) {
             />
           </div>
           <hr />
-          <form onSubmit={handleSubmit}>
+          <form onSubmit={handleSubmit} className="mt-3">
             <TextArea1
               value={content}
               name="content"

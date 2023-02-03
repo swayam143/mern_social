@@ -23,6 +23,11 @@ import { TextFields2 } from "../../components/textField/Textfields";
 import { ThirdButton } from "../../components/button/Buttons";
 import { Error } from "../../components/toast/Toasts";
 import EditReplyCommentModal from "./EditReplyComment";
+import {
+  deleteParticularPostComments,
+  likeParticularPostComment,
+  replyParticularPostComments,
+} from "../../redux/particularPostSlice";
 
 // import axios from "axios";
 
@@ -41,26 +46,38 @@ const Comments = ({ comments, moreComm, user, postId }) => {
   const dispatch = useDispatch();
 
   const handleLike = async (data) => {
-    dispatch({ type: likeComment, payload: { postId, data, user } });
     await axios.post(`${Base_url}likeUnlike`, {
       commentId: data._id,
       user: user._id,
     });
+    if (moreComm === true) {
+      dispatch({ type: likeParticularPostComment, payload: { data, user } });
+    } else {
+      dispatch({ type: likeComment, payload: { postId, data, user } });
+    }
   };
 
   const replyComment = async (data) => {
     if (content.toLowerCase().replace(/ /g, "") === "") {
       Error("Please enter a valid content");
     } else {
-      dispatch({
-        type: replyComments,
-        payload: { postId, data, user, content },
-      });
       await axios.post(`${Base_url}replyComment`, {
         content,
         commentId: data._id,
         user: user._id,
       });
+      if (moreComm === true) {
+        console.log(true);
+        dispatch({
+          type: replyParticularPostComments,
+          payload: { data, user, content },
+        });
+      } else {
+        dispatch({
+          type: replyComments,
+          payload: { postId, data, user, content },
+        });
+      }
       setContent("");
     }
   };
@@ -82,12 +99,16 @@ const Comments = ({ comments, moreComm, user, postId }) => {
   // console.log(reply);
 
   const deleteComment = async (data) => {
-    const findpostIndex = allPosts.findIndex((item) => item._id === postId);
-    dispatch({ type: deleteComments, payload: { findpostIndex, data } });
-
     await axios.post(`${Base_url}deleteComment`, {
       commentId: data._id,
     });
+    if (moreComm === true) {
+      dispatch({ type: deleteParticularPostComments, payload: { data } });
+      // console.log(data);
+    } else {
+      const findpostIndex = allPosts.findIndex((item) => item._id === postId);
+      dispatch({ type: deleteComments, payload: { findpostIndex, data } });
+    }
   };
 
   // console.log(allPosts);
@@ -216,101 +237,106 @@ const Comments = ({ comments, moreComm, user, postId }) => {
                       </div>
                     </div>
                     {data?.reply?.length > 0 &&
-                      data.reply.slice(0, 1).map((item, i) => (
-                        <div key={i}>
-                          {" "}
-                          <hr className="my-2" />
-                          <div className="  d-flex align-items-center justify-content-between flex-wrap">
-                            <div style={{ gap: "10px" }} className="d-flex ">
-                              {" "}
-                              {item && item?.user?.picture !== "" ? (
-                                <Zoom>
-                                  <img
-                                    style={{
-                                      width: "20px",
-                                      height: "20px",
-                                      borderRadius: "50%",
-                                    }}
-                                    className="img-fluid "
-                                    src={` ${Img_url}${
+                      data.reply
+                        .slice(
+                          0,
+                          `${moreComm === true ? data.reply.length : 1}`
+                        )
+                        .map((item, i) => (
+                          <div key={i}>
+                            {" "}
+                            <hr className="my-2" />
+                            <div className="  d-flex align-items-center justify-content-between flex-wrap">
+                              <div style={{ gap: "10px" }} className="d-flex ">
+                                {" "}
+                                {item && item?.user?.picture !== "" ? (
+                                  <Zoom>
+                                    <img
+                                      style={{
+                                        width: "20px",
+                                        height: "20px",
+                                        borderRadius: "50%",
+                                      }}
+                                      className="img-fluid "
+                                      src={` ${Img_url}${
+                                        item &&
+                                        (item?.user?._id === user?._id ||
+                                          item?.user === user._id)
+                                          ? user?.picture
+                                          : item?.user?.picture
+                                      }`}
+                                      alt="users"
+                                    />{" "}
+                                  </Zoom>
+                                ) : (
+                                  <Avatar sx={{ bgcolor: deepPurple[500] }}>
+                                    {item &&
+                                    (item?.user?._id === user?._id ||
+                                      item?.user === user._id)
+                                      ? user?.fullname?.[0].toUpperCase()
+                                      : item?.user?.fullname?.[0].toUpperCase()}
+                                  </Avatar>
+                                )}
+                                <div>
+                                  <Text1
+                                    title={
                                       item &&
                                       (item?.user?._id === user?._id ||
                                         item?.user === user._id)
-                                        ? user?.picture
-                                        : item?.user?.picture
-                                    }`}
-                                    alt="users"
-                                  />{" "}
-                                </Zoom>
-                              ) : (
-                                <Avatar sx={{ bgcolor: deepPurple[500] }}>
-                                  {item &&
-                                  (item?.user?._id === user?._id ||
-                                    item?.user === user._id)
-                                    ? user?.fullname?.[0].toUpperCase()
-                                    : item?.user?.fullname?.[0].toUpperCase()}
-                                </Avatar>
-                              )}
-                              <div>
-                                <Text1
-                                  title={
-                                    item &&
-                                    (item?.user?._id === user?._id ||
-                                      item?.user === user._id)
-                                      ? user?.fullname
-                                      : item?.user?.fullname
-                                  }
-                                />
-                                <p className="fs_12">{item?.content}</p>
-                                <div
-                                  style={{ gap: "10px" }}
-                                  className="d-flex align-items-center"
-                                >
-                                  <p className="fs_10">
-                                    {" "}
-                                    {moment(item.createdAt).fromNow()}
-                                  </p>
+                                        ? user?.fullname
+                                        : item?.user?.fullname
+                                    }
+                                  />
+                                  <p className="fs_12">{item?.content}</p>
+                                  <div
+                                    style={{ gap: "10px" }}
+                                    className="d-flex align-items-center"
+                                  >
+                                    <p className="fs_10">
+                                      {" "}
+                                      {moment(item.createdAt).fromNow()}
+                                    </p>
+                                  </div>
                                 </div>
                               </div>
-                            </div>
-                            {user?._id === item?.user?._id && (
-                              <div
-                                className="relative"
-                                onClick={() =>
-                                  setDrop(drop === "" ? item._id : "")
-                                }
-                              >
-                                <MoreVertIcon
-                                  style={{ marginTop: "-4px" }}
-                                  sx={{ fontSize: "1em" }}
-                                  className="pointer ms-2"
-                                />
-                                {drop === item._id && (
-                                  <div
-                                    style={{ width: "73px" }}
-                                    className="drop_details"
-                                  >
-                                    <Text1
-                                      onClick={
-                                        () => editReplyCmmment({ data, item })
-                                        // setEdit(true)
-                                      }
-                                      classNames="pointer my-2"
-                                      title="Edit "
-                                    />
+                              {user?._id === item?.user?._id && (
+                                <div
+                                  className="relative"
+                                  onClick={() =>
+                                    setDrop(drop === "" ? item._id : "")
+                                  }
+                                >
+                                  <MoreVertIcon
+                                    style={{ marginTop: "-4px" }}
+                                    sx={{ fontSize: "1em" }}
+                                    className="pointer ms-2"
+                                  />
+                                  {drop === item._id && (
+                                    <div
+                                      style={{ width: "73px" }}
+                                      className="drop_details"
+                                    >
+                                      <Text1
+                                        onClick={
+                                          () => editReplyCmmment({ data, item })
+                                          // setEdit(true)
+                                        }
+                                        classNames="pointer my-2"
+                                        title="Edit "
+                                      />
 
-                                    <Text1
-                                      onClick={() => deleteComment(data)}
-                                      classNames="pointer my-2"
-                                      title="Remove "
-                                    />
-                                  </div>
-                                )}
-                              </div>
-                            )}
+                                      <Text1
+                                        onClick={() => deleteComment(data)}
+                                        classNames="pointer my-2"
+                                        title="Remove "
+                                      />
+                                    </div>
+                                  )}
+                                </div>
+                              )}
+                            </div>
                           </div>
-                        </div>
-                      ))}
+                        ))}
                     {reply === data._id && (
                       <div
                         style={{ gap: "10px" }}
@@ -332,15 +358,15 @@ const Comments = ({ comments, moreComm, user, postId }) => {
                       </div>
                     )}
                   </div>
-                  {(comments?.length > 1 ||
-                    comments?.[0]?.reply?.length > 1) && (
-                    <Text1
-                      onClick={() => setOpen(true)}
-                      style={{ color: `var(--600)`, textAlign: "right" }}
-                      title="View More"
-                      classNames="mt-2 me-1 pointer"
-                    />
-                  )}
+                  {(comments?.length > 1 || comments?.[0]?.reply?.length > 1) &&
+                    moreComm === false && (
+                      <Text1
+                        onClick={() => setOpen(true)}
+                        style={{ color: `var(--600)`, textAlign: "right" }}
+                        title="View More"
+                        classNames="mt-2 me-1 pointer"
+                      />
+                    )}
                 </div>
               </div>
             </div>
@@ -360,6 +386,7 @@ const Comments = ({ comments, moreComm, user, postId }) => {
         dataChange={dataChange}
         postId={postId}
         user={user}
+        moreComm={moreComm}
       />
       <EditReplyCommentModal
         edit={editReply}

@@ -22,6 +22,7 @@ import { TextFields2 } from "../../components/textField/Textfields";
 import { ThirdButton } from "../../components/button/Buttons";
 import Comments from "./Comments";
 import { Success } from "../../components/toast/Toasts";
+import { useNavigate } from "react-router-dom";
 
 const Posts = ({ user }) => {
   const { getPosts } = useHomeFunctanility();
@@ -82,7 +83,7 @@ const Posts = ({ user }) => {
   // console.log(allPosts);
 
   const handleComment = async (post) => {
-    if (content === "") {
+    if (content.toLowerCase().replace(/ /g, "") === "") {
       Success("Please enter a valid comment");
     } else {
       const findpostIndex = allPosts.findIndex((item) => item._id === post._id);
@@ -112,6 +113,8 @@ const Posts = ({ user }) => {
       }
     }
   };
+
+  const navigate = useNavigate();
 
   return (
     <div>
@@ -210,15 +213,17 @@ const Posts = ({ user }) => {
                     {/* </OutsideClickHandler> */}
                   </div>
                   <Text1 title={data?.content} />
-                  <div className="d-flex align-items-center justify-content-center post_img_container ">
-                    <Zoom>
-                      <img
-                        style={{ maxHeight: "300px", minHeight: "100px" }}
-                        src={`${Img_url}${data?.picture}`}
-                        alt="post"
-                        className="img-fluid"
-                      />
-                    </Zoom>
+                  <div
+                    onClick={() => navigate(`/post/${data._id}`)}
+                    className="d-flex align-items-center justify-content-center post_img_container pointer "
+                  >
+                    <img
+                      style={{ maxHeight: "300px", minHeight: "100px" }}
+                      src={`${Img_url}${data?.picture}`}
+                      alt="post"
+                      className="img-fluid"
+                    />
+
                     <div className="icon_btn_div">
                       {data.likes.find(
                         (item) =>
