@@ -2,19 +2,19 @@ import * as React from "react";
 import Box from "@mui/material/Box";
 import Modal from "@mui/material/Modal";
 import CancelIcon from "@mui/icons-material/Cancel";
-import { MainHeading } from "../../components/text/Texts";
-import { TextArea1 } from "../../components/textField/Textfields";
+import { MainHeading } from "../../../components/text/Texts";
+import { TextArea1 } from "../../../components/textField/Textfields";
 import { Button } from "@mui/material";
-import { SecondaryButton } from "../../components/button/Buttons";
+import { SecondaryButton } from "../../../components/button/Buttons";
 import Zoom from "react-medium-image-zoom";
 import "react-medium-image-zoom/dist/styles.css";
 import Validator from "validatorjs";
-import { Success, Validate } from "../../components/toast/Toasts";
+import { Success, Validate } from "../../../components/toast/Toasts";
 import axios from "axios";
-import { Base_url, Img_url } from "../../constant";
-import { updatePost } from "../../redux/postSlice";
+import { Base_url, Img_url } from "../../../constant";
+import { updatePost } from "../../../redux/postSlice";
 import { useDispatch } from "react-redux";
-import { updateParticularPost } from "../../redux/particularPostSlice";
+import { updateParticularPost } from "../../../redux/particularPostSlice";
 
 const style = {
   position: "absolute",

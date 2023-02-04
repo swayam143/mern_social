@@ -1,4 +1,4 @@
-import { Avatar, CircularProgress, IconButton } from "@mui/material";
+import { Avatar, CircularProgress } from "@mui/material";
 import { deepPurple } from "@mui/material/colors";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -14,7 +14,7 @@ import { GET } from "../../constant/RequestAuthService";
 import { UNSECURED } from "../../constant/Util";
 import Zoom from "react-medium-image-zoom";
 import "react-medium-image-zoom/dist/styles.css";
-import MoreVertIcon from "@mui/icons-material/MoreVert";
+// import MoreVertIcon from "@mui/icons-material/MoreVert";
 import "./profile.css";
 import EditModal from "./EditModal";
 import { Base_url, Img_url } from "../../constant";
@@ -102,10 +102,111 @@ const Profile = () => {
     setLoading(false);
   };
 
+  console.log(user);
+
   return (
     <>
-      <div className="card-container relative">
-        <div className="">
+      {/* <div className="container">
+        <div className="row p-2">
+          <div className=" relative w-100 p-2"> */}
+      <div className="container mt-4">
+        <div className="row">
+          <div className="col-sm-6 col-lg-3 mb-3">
+            {" "}
+            <div className=" user_img_profile">
+              {user && user.picture !== "" ? (
+                <Zoom>
+                  <img
+                    className="img-fluid user_img"
+                    src={`${Img_url}${user?.picture}`}
+                    alt="users"
+                  />
+                </Zoom>
+              ) : (
+                <Avatar
+                  className="user_img"
+                  sx={{ bgcolor: deepPurple[500], fontSize: "50px" }}
+                >
+                  {user && user?.fullname?.[0].toUpperCase()}
+                </Avatar>
+              )}
+            </div>
+            {loading === true ? (
+              <CircularProgress color="secondary" />
+            ) : (
+              UNSECURED(userData).user._id !== id &&
+              (follow === true ? (
+                <PrimaryButton
+                  onClick={unfollowUser}
+                  classNames=" mt-2 w-100"
+                  title="Following"
+                  sx={{
+                    color: "#000 !important",
+                    // margin: "8px 0px 0px 0px !important",
+                  }}
+                />
+              ) : (
+                <SecondaryButton
+                  title="Follow"
+                  classNames="mx-auto mt-4 "
+                  onClick={followUser}
+                />
+              ))
+            )}
+            {UNSECURED(userData).user._id === id && (
+              // <IconButton onClick={() => setModal(true)} className="">
+              //   <MoreVertIcon sx={{ color: `var(--601)` }} />
+              // </IconButton>
+              <SecondaryButton
+                title="Edit Profile"
+                classNames="mx-auto mt-4 "
+                onClick={() => setModal(true)}
+              />
+            )}
+          </div>{" "}
+          <div className="col-sm-6 col-lg-9">
+            <div>
+              <div className="bx_sh profile_txt">
+                <MainHeading title={user?.fullname.toUpperCase()} />
+              </div>
+              <br />
+              <div className="bx_sh profile_txt mt-3">
+                <p className="fs_18 ">@{user?.username}</p>
+              </div>
+              <br />
+              <div className="bx_sh profile_txt mt-3">
+                <p className="fs_14">{user?.email}</p>
+              </div>
+            </div>
+            <div
+              style={{ gap: "15px" }}
+              className="d-flex align-items-center flex-wrap mt-3"
+            >
+              <div className="follower_cont">
+                <Text1
+                  onClick={() => setFollowerModal(true)}
+                  classNames="pointer"
+                  title={`${user?.followers?.length} Followers`}
+                />{" "}
+              </div>{" "}
+              <div className="follower_cont">
+                <Text1
+                  onClick={() => setFollowingModal(true)}
+                  classNames="pointer"
+                  title={`${user?.following?.length} Following`}
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* <div className="col-sm-2 ">
+              
+            
+            </div>
+            <div className="col-sm-10"></div> */}
+      {/* <div className="">
           <div className="image-container mt-3 mb-2">
             {user && user.picture !== "" ? (
               <Zoom>
@@ -113,7 +214,7 @@ const Profile = () => {
                   className="img-fluid user_img"
                   src={`${Img_url}${user?.picture}`}
                   alt="users"
-                />{" "}
+                />
               </Zoom>
             ) : (
               <Avatar
@@ -172,11 +273,13 @@ const Profile = () => {
         </div>
         {UNSECURED(userData).user._id === id && (
           <IconButton onClick={() => setModal(true)} className="edit_btn">
-            {" "}
+            
             <MoreVertIcon sx={{ color: `var(--601)` }} />
           </IconButton>
-        )}
-      </div>
+        )} */}
+      {/* </div>
+        </div>
+      </div> */}
       <FullPageLoader open={open} setOpen={setOpen} />
       <EditModal modal={modal} setModal={setModal} user={user} />
       <FollowersModal

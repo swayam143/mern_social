@@ -1,14 +1,14 @@
 import * as React from "react";
 import Box from "@mui/material/Box";
 import { Modal } from "@mui/material";
-import { TextArea1 } from "../../components/textField/Textfields";
-import { SecondaryButton } from "../../components/button/Buttons";
+import { TextArea1 } from "../../../../components/textField/Textfields";
+import { SecondaryButton } from "../../../../components/button/Buttons";
 import Validator from "validatorjs";
-import { Success, Validate } from "../../components/toast/Toasts";
+import { Success, Validate } from "../../../../components/toast/Toasts";
 import { useDispatch } from "react-redux";
-import { upDateReplyComment } from "../../redux/postSlice";
+import { upDateReplyComment } from "../../../../redux/postSlice";
 import axios from "axios";
-import { Base_url } from "../../constant";
+import { Base_url } from "../../../../constant";
 
 const style = {
   position: "absolute",

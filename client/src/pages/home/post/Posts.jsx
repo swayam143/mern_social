@@ -1,28 +1,29 @@
 import { Avatar, IconButton } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { FullPageLoader } from "../../components/loader/Loaders";
-import { Base_url, Img_url } from "../../constant";
+import { FullPageLoader } from "../../../components/loader/Loaders";
+import { Base_url, Img_url } from "../../../constant";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import Zoom from "react-medium-image-zoom";
 import "react-medium-image-zoom/dist/styles.css";
-import { DimText, Heading1, Text1 } from "../../components/text/Texts";
+import { DimText, Heading1, Text1 } from "../../../components/text/Texts";
 import { deepPurple } from "@mui/material/colors";
 import moment from "moment";
-import { useHomeFunctanility } from "./useHomeApi";
+import { useHomeFunctanility } from "../useHomeApi";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import ChatBubbleOutlineIcon from "@mui/icons-material/ChatBubbleOutline";
 import IosShareIcon from "@mui/icons-material/IosShare";
 import BookmarkBorderIcon from "@mui/icons-material/BookmarkBorder";
-import EditPostModal from "./EditPostModal";
-import { addComment, likePost, unlikePost } from "../../redux/postSlice";
+import EditPostModal from "../../sharedComponents/editPostModal/EditPostModal";
+import { addComment, likePost, unlikePost } from "../../../redux/postSlice";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import axios from "axios";
-import { TextFields2 } from "../../components/textField/Textfields";
-import { ThirdButton } from "../../components/button/Buttons";
-import Comments from "./Comments";
-import { Success } from "../../components/toast/Toasts";
+import { TextFields2 } from "../../../components/textField/Textfields";
+import { ThirdButton } from "../../../components/button/Buttons";
+import { Success } from "../../../components/toast/Toasts";
 import { useNavigate } from "react-router-dom";
+import Comments from "../../sharedComponents/comments/Comments";
+import { useCustomFunctanilty } from "../../apis/useCustom";
 
 const Posts = ({ user }) => {
   const { getPosts } = useHomeFunctanility();
@@ -33,21 +34,17 @@ const Posts = ({ user }) => {
   const [moreComm, setMoreComm] = useState(false);
   const [contentVal, setContentVal] = useState("");
 
+  const { handleEditPost } = useCustomFunctanilty(
+    setDrop,
+    setEdit,
+    setPostData
+  );
+
   const allPosts = useSelector((state) => state.post.allPosts);
-  // console.log(allPosts);
 
   useEffect(() => {
     getPosts(user);
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
-
-  // console.log(allPosts);
-
-  const handleEditPost = (data) => {
-    // console.log(data);
-    setDrop("");
-    setEdit(true);
-    setPostData(data);
-  };
 
   const dispatch = useDispatch();
 
@@ -213,11 +210,9 @@ const Posts = ({ user }) => {
                     {/* </OutsideClickHandler> */}
                   </div>
                   <Text1 title={data?.content} />
-                  <div
-                    onClick={() => navigate(`/post/${data._id}`)}
-                    className="d-flex align-items-center justify-content-center post_img_container pointer "
-                  >
+                  <div className="d-flex align-items-center justify-content-center post_img_container pointer ">
                     <img
+                      onClick={() => navigate(`/post/${data._id}`)}
                       style={{ maxHeight: "300px", minHeight: "100px" }}
                       src={`${Img_url}${data?.picture}`}
                       alt="post"
@@ -313,19 +308,3 @@ const Posts = ({ user }) => {
 };
 
 export default Posts;
-
-//
-// const findpostInd = state.allPosts.findIndex(
-//   (item) => item._id === post._id
-// );
-// const allPost = [...state.allPosts];
-
-// allPost[findpostInd] = {
-//   ...allPost[findpostInd],
-//   comment: [
-//     ...allPost[findpostInd].comment,
-//     newComment,
-//   ],
-// // const newData = { ...post, comments: [...post.comments, newComment] };
-// // console.log(newData);
-// },

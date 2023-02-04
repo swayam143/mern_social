@@ -21,8 +21,8 @@ import IosShareIcon from "@mui/icons-material/IosShare";
 import BookmarkBorderIcon from "@mui/icons-material/BookmarkBorder";
 import { TextFields2 } from "../../components/textField/Textfields";
 import { ThirdButton } from "../../components/button/Buttons";
-import Comments from "../home/Comments";
-import EditPostModal from "../home/EditPostModal";
+import Comments from "../sharedComponents/comments/Comments";
+import EditPostModal from "../sharedComponents/editPostModal/EditPostModal";
 import {
   addParticularPostComment,
   getPost,
@@ -116,7 +116,7 @@ const PostDetails = () => {
     }
   };
 
-  console.log(particularPost);
+  // console.log(particularPost);
 
   return (
     <div className="container mt-4 ">
@@ -136,24 +136,22 @@ const PostDetails = () => {
                     >
                       {particularPost &&
                       particularPost?.user?.picture !== "" ? (
-                        <Zoom>
-                          <img
-                            style={{
-                              width: "40px",
-                              height: "40px",
-                              borderRadius: "50%",
-                            }}
-                            className="img-fluid "
-                            src={` ${Img_url}${
-                              particularPost &&
-                              (particularPost?.user?._id === user?._id ||
-                                particularPost?.user === user._id)
-                                ? user?.picture
-                                : particularPost?.user?.picture
-                            }`}
-                            alt="users"
-                          />{" "}
-                        </Zoom>
+                        <img
+                          style={{
+                            width: "40px",
+                            height: "40px",
+                            borderRadius: "50%",
+                          }}
+                          className="img-fluid "
+                          src={` ${Img_url}${
+                            particularPost &&
+                            (particularPost?.user?._id === user?._id ||
+                              particularPost?.user === user._id)
+                              ? user?.picture
+                              : particularPost?.user?.picture
+                          }`}
+                          alt="users"
+                        />
                       ) : (
                         <Avatar sx={{ bgcolor: deepPurple[500] }}>
                           {particularPost &&
@@ -218,15 +216,17 @@ const PostDetails = () => {
                     <div className="col-sm-6">
                       <Text1 title={particularPost?.content} />
                       <div className="d-flex align-items-center justify-content-center post_img_container pointer mb-4">
-                        <img
-                          style={{ maxHeight: "300px", minHeight: "100px" }}
-                          src={`${Img_url}${particularPost?.picture}`}
-                          alt="post"
-                          className="img-fluid"
-                        />
+                        <Zoom>
+                          <img
+                            style={{ maxHeight: "300px", minHeight: "100px" }}
+                            src={`${Img_url}${particularPost?.picture}`}
+                            alt="post"
+                            className="img-fluid"
+                          />
+                        </Zoom>
 
                         <div className="icon_btn_div">
-                          {particularPost.likes.find(
+                          {particularPost?.likes.find(
                             (item) =>
                               item._id === user._id ||
                               particularPost.likes.find(

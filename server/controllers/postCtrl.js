@@ -21,6 +21,29 @@ const postCtrl = {
       return res.status(500).json({ mssg: err.message });
     }
   },
+  getAllPost: async (req, res) => {
+    const { user } = req.body;
+    try {
+      //
+      //Finding the user by id so we can get what users he is following
+      //
+      const users = await Users.findOne({ _id: req.params.id });
+      const posts = await Posts.find()
+        .populate("user likes", "username fullname picture")
+        .populate({
+          path: "comments",
+          populate: {
+            path: "user likes reply reply.user",
+            select: "username fullname picture",
+          },
+          options: { sort: { createdAt: -1 } },
+        });
+
+      res.json({ msg: "Success", result: posts.length, posts });
+    } catch (err) {
+      return res.status(500).json({ mssg: err.message });
+    }
+  },
   getPosts: async (req, res) => {
     const { user } = req.body;
     try {

@@ -3,36 +3,37 @@ import { deepPurple } from "@mui/material/colors";
 import React from "react";
 import Zoom from "react-medium-image-zoom";
 import "react-medium-image-zoom/dist/styles.css";
-import { Text1 } from "../../components/text/Texts";
-import { Base_url, Img_url } from "../../constant";
+import { Text1 } from "../../../components/text/Texts";
+import { Base_url, Img_url } from "../../../constant";
 import moment from "moment";
 import { useState } from "react";
-import AllCommentModal from "./AllCommentModal";
+// import AllCommentModal from "./AllCommentModal";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
-import EditCommentModal from "./EditCommentModal";
+import EditCommentModal from "./modals/EditCommentModal";
 import { useDispatch, useSelector } from "react-redux";
 import {
   deleteComments,
   likeComment,
   replyComments,
-} from "../../redux/postSlice";
+} from "../../../redux/postSlice";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import axios from "axios";
-import { TextFields2 } from "../../components/textField/Textfields";
-import { ThirdButton } from "../../components/button/Buttons";
-import { Error } from "../../components/toast/Toasts";
-import EditReplyCommentModal from "./EditReplyComment";
+import { TextFields2 } from "../../../components/textField/Textfields";
+import { ThirdButton } from "../../../components/button/Buttons";
+import { Error } from "../../../components/toast/Toasts";
+import EditReplyCommentModal from "./modals/EditReplyComment";
 import {
   deleteParticularPostComments,
   likeParticularPostComment,
   replyParticularPostComments,
-} from "../../redux/particularPostSlice";
+} from "../../../redux/particularPostSlice";
+import { useNavigate } from "react-router-dom";
 
 // import axios from "axios";
 
 const Comments = ({ comments, moreComm, user, postId }) => {
-  const [open, setOpen] = useState(false);
+  // const [open, setOpen] = useState(false);
   const [edit, setEdit] = useState(false);
   const [drop, setDrop] = useState("");
   const [dataChange, setDataChange] = useState(false);
@@ -112,6 +113,7 @@ const Comments = ({ comments, moreComm, user, postId }) => {
   };
 
   // console.log(allPosts);
+  const navigate = useNavigate();
   return (
     <div>
       {comments?.length > 0 &&
@@ -361,7 +363,7 @@ const Comments = ({ comments, moreComm, user, postId }) => {
                   {(comments?.length > 1 || comments?.[0]?.reply?.length > 1) &&
                     moreComm === false && (
                       <Text1
-                        onClick={() => setOpen(true)}
+                        onClick={() => navigate(`/post/${postId}`)}
                         style={{ color: `var(--600)`, textAlign: "right" }}
                         title="View More"
                         classNames="mt-2 me-1 pointer"
@@ -371,12 +373,12 @@ const Comments = ({ comments, moreComm, user, postId }) => {
               </div>
             </div>
           ))}
-      <AllCommentModal
+      {/* <AllCommentModal
         open={open}
         setOpen={setOpen}
         comments={comments}
         user={user}
-      />
+      /> */}
       <EditCommentModal
         edit={edit}
         setEdit={setEdit}

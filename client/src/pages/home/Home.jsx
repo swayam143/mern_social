@@ -5,9 +5,10 @@ import { Img_url } from "../../constant";
 import { Avatar } from "@mui/material";
 import { deepPurple } from "@mui/material/colors";
 import { TextFields2 } from "../../components/textField/Textfields";
-import PostModal from "./PostModal";
+
 import "./Home.css";
-import Posts from "./Posts";
+import Posts from "./post/Posts";
+import PostModal from "./post/PostModal";
 
 const Home = () => {
   const userData = useSelector((state) => state.auth.userData);
