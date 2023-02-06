@@ -38,6 +38,11 @@ export const postSlice = createSlice({
 
       state.allPosts = allPost;
     },
+    deletePosts: (state, action) => {
+      state.allPosts = state.allPosts.filter(
+        (item) => parseInt(item._id) !== parseInt(action.payload._id)
+      );
+    },
     likePost: (state, action) => {
       const allPost = [...state.allPosts];
       // console.log(action.payload);
@@ -247,6 +252,7 @@ export const {
   likePost,
   unlikePost,
   addComment,
+  deletePosts,
   likedReply,
   likeComment,
   upDateComment,

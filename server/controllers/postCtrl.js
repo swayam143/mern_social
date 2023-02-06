@@ -140,6 +140,16 @@ const postCtrl = {
       return res.status(500).json({ mssg: err.message });
     }
   },
+  DeletePost: async (req, res) => {
+    const { postId, userId } = req.body;
+    // console.log(postId, userId);
+    try {
+      await Posts.findOneAndDelete({ _id: postId, user: userId });
+      res.json({ msg: "Post Deleted Successfullysssfdg" });
+    } catch (err) {
+      return res.status(500).json({ mssg: err.message });
+    }
+  },
 };
 
 module.exports = postCtrl;

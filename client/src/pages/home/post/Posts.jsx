@@ -1,8 +1,8 @@
 import { Avatar, IconButton } from "@mui/material";
 import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { FullPageLoader } from "../../../components/loader/Loaders";
-import { Base_url, Img_url } from "../../../constant";
+import { Img_url } from "../../../constant";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import Zoom from "react-medium-image-zoom";
 import "react-medium-image-zoom/dist/styles.css";
@@ -15,15 +15,12 @@ import ChatBubbleOutlineIcon from "@mui/icons-material/ChatBubbleOutline";
 import IosShareIcon from "@mui/icons-material/IosShare";
 import BookmarkBorderIcon from "@mui/icons-material/BookmarkBorder";
 import EditPostModal from "../../sharedComponents/editPostModal/EditPostModal";
-import { addComment, likePost, unlikePost } from "../../../redux/postSlice";
 import FavoriteIcon from "@mui/icons-material/Favorite";
-import axios from "axios";
 import { TextFields2 } from "../../../components/textField/Textfields";
 import { ThirdButton } from "../../../components/button/Buttons";
-import { Success } from "../../../components/toast/Toasts";
 import { useNavigate } from "react-router-dom";
 import Comments from "../../sharedComponents/comments/Comments";
-import { useCustomFunctanilty } from "../../apis/useCustom";
+import { usePostFunctanilty } from "../../apis/usePostCustom";
 
 const Posts = ({ user }) => {
   const { getPosts } = useHomeFunctanility();
@@ -33,83 +30,14 @@ const Posts = ({ user }) => {
   const [content, setContent] = useState("");
   const [moreComm, setMoreComm] = useState(false);
   const [contentVal, setContentVal] = useState("");
-
-  const { handleEditPost } = useCustomFunctanilty(
-    setDrop,
-    setEdit,
-    setPostData
-  );
-
   const allPosts = useSelector((state) => state.post.allPosts);
+
+  const { handleEditPost, HandleLike, handleComment, deletePost } =
+    usePostFunctanilty(setDrop, setEdit, setPostData, content, setContent);
 
   useEffect(() => {
     getPosts(user);
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
-
-  const dispatch = useDispatch();
-
-  const handleLike = async (data) => {
-    //
-    //Fid index of pparticular post
-    //
-    const findpostIndex = allPosts.findIndex((item) => item._id === data._id);
-    //
-    //Is likes already exist
-    //
-
-    const IsAlreadyLiked = data.likes.findIndex(
-      (item) => item._id === user._id
-    );
-
-    if (IsAlreadyLiked !== -1) {
-      dispatch({ type: unlikePost, payload: { findpostIndex, user } });
-      await axios.post(`${Base_url}unlikePost`, {
-        userId: user._id,
-        postId: data._id,
-      });
-    } else {
-      dispatch({ type: likePost, payload: { findpostIndex, user } });
-      await axios.post(`${Base_url}likePost`, {
-        userId: user._id,
-        postId: data._id,
-      });
-      // console.log(response);
-    }
-  };
-
-  // console.log(allPosts);
-
-  const handleComment = async (post) => {
-    if (content.toLowerCase().replace(/ /g, "") === "") {
-      Success("Please enter a valid comment");
-    } else {
-      const findpostIndex = allPosts.findIndex((item) => item._id === post._id);
-
-      const response = await axios.post(`${Base_url}comment`, {
-        postId: post._id,
-        content,
-        user: user._id,
-      });
-      if (response.status === 200) {
-        const newComment = {
-          content,
-          likes: [],
-          user,
-          reply: [],
-          createdAt: new Date().toISOString(),
-          _id: response.data.newComment._id,
-        };
-        dispatch({
-          type: addComment,
-          payload: {
-            newComment,
-            findpostIndex,
-          },
-        });
-        setContent("");
-      }
-    }
-  };
 
   const navigate = useNavigate();
 
@@ -194,7 +122,7 @@ const Posts = ({ user }) => {
                             />
 
                             <Text1
-                              onClick={() => console.log("hy")}
+                              onClick={() => deletePost(data)}
                               classNames="pointer my-2"
                               title="Remove Post"
                             />
@@ -226,14 +154,14 @@ const Posts = ({ user }) => {
                           data.likes.find((item) => item === user._id)
                       ) ? (
                         <div
-                          onClick={() => handleLike(data)}
+                          onClick={() => HandleLike(data)}
                           className="icon_div"
                         >
                           <FavoriteIcon sx={{ color: "red" }} />
                         </div>
                       ) : (
                         <div
-                          onClick={() => handleLike(data)}
+                          onClick={() => HandleLike(data)}
                           className="icon_div"
                         >
                           <FavoriteBorderIcon />

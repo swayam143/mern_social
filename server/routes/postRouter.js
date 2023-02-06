@@ -26,5 +26,6 @@ router.get("/posts/:id", postCtrl.getPosts);
 router.post("/updatedposts", upload.single("picture"), postCtrl.updatePost);
 router.post("/likePost", postCtrl.likePost);
 router.post("/unlikePost", postCtrl.unlikePost);
+router.post("/delposts", postCtrl.DeletePost);
 
 module.exports = router;
