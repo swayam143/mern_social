@@ -1,12 +1,9 @@
 import * as React from "react";
 import Box from "@mui/material/Box";
 import Modal from "@mui/material/Modal";
-// import Validator from "validatorjs";
-// import { Success, Validate } from "../../components/toast/Toasts";
-// import { POST } from "../../constant/RequestAuthService";
+
 import { TextFields2 } from "../../components/textField/Textfields";
 import {
-  Avatar,
   FormControl,
   FormControlLabel,
   IconButton,
@@ -18,17 +15,16 @@ import { FullPageLoader } from "../../components/loader/Loaders";
 import CancelIcon from "@mui/icons-material/Cancel";
 import Zoom from "react-medium-image-zoom";
 import "react-medium-image-zoom/dist/styles.css";
-import { deepPurple } from "@mui/material/colors";
 import CreateIcon from "@mui/icons-material/Create";
 import CloseIcon from "@mui/icons-material/Close";
 import { useDispatch, useSelector } from "react-redux";
 import { UNSECURED } from "../../constant/Util";
-import { Img_url } from "../../constant";
 import Validator from "validatorjs";
 import { Success, Validate } from "../../components/toast/Toasts";
 import axios from "axios";
 import { Base_url } from "../../constant/index";
 import { isLogin } from "../../redux/authSlice";
+import { UsersProfile } from "../sharedComponents/avatar/UserProfile";
 
 const style = {
   position: "absolute",
@@ -168,21 +164,8 @@ export default function EditModal({ modal, setModal }) {
                       <CloseIcon sx={{ color: `#fff` }} />
                     </IconButton>
                   </>
-                ) : user && user.picture !== "" ? (
-                  <Zoom>
-                    <img
-                      className="user_img"
-                      src={`${Img_url}${user.picture}`}
-                      alt="users"
-                    />
-                  </Zoom>
                 ) : (
-                  <Avatar
-                    className="user_img"
-                    sx={{ bgcolor: deepPurple[500], fontSize: "50px" }}
-                  >
-                    {user?.fullname?.[0].toUpperCase()}
-                  </Avatar>
+                  <UsersProfile data={user} className="user_img" />
                 )}
 
                 <IconButton

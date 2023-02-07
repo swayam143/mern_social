@@ -1,5 +1,5 @@
-import { Avatar, CircularProgress } from "@mui/material";
-import { deepPurple } from "@mui/material/colors";
+import { CircularProgress } from "@mui/material";
+
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
@@ -12,16 +12,15 @@ import { MainHeading, Text1 } from "../../components/text/Texts";
 import { Error, Success } from "../../components/toast/Toasts";
 import { GET } from "../../constant/RequestAuthService";
 import { UNSECURED } from "../../constant/Util";
-import Zoom from "react-medium-image-zoom";
 import "react-medium-image-zoom/dist/styles.css";
-// import MoreVertIcon from "@mui/icons-material/MoreVert";
 import "./profile.css";
 import EditModal from "./EditModal";
-import { Base_url, Img_url } from "../../constant";
+import { Base_url } from "../../constant";
 import axios from "axios";
 import { isLogin } from "../../redux/authSlice";
 import FollowersModal from "./FollwersModal";
 import FollowingModal from "./FollowingModal";
+import { UsersProfile } from "../sharedComponents/avatar/UserProfile";
 
 const Profile = () => {
   const [open, setOpen] = useState(false);
@@ -102,7 +101,7 @@ const Profile = () => {
     setLoading(false);
   };
 
-  console.log(user);
+  // console.log(user);
 
   return (
     <>
@@ -114,22 +113,7 @@ const Profile = () => {
           <div className="col-sm-6 col-lg-3 mb-3">
             {" "}
             <div className=" user_img_profile">
-              {user && user.picture !== "" ? (
-                <Zoom>
-                  <img
-                    className="img-fluid user_img"
-                    src={`${Img_url}${user?.picture}`}
-                    alt="users"
-                  />
-                </Zoom>
-              ) : (
-                <Avatar
-                  className="user_img"
-                  sx={{ bgcolor: deepPurple[500], fontSize: "50px" }}
-                >
-                  {user && user?.fullname?.[0].toUpperCase()}
-                </Avatar>
-              )}
+              <UsersProfile data={user} className="user_img" />
             </div>
             {loading === true ? (
               <CircularProgress color="secondary" />
@@ -201,85 +185,6 @@ const Profile = () => {
         </div>
       </div>
 
-      {/* <div className="col-sm-2 ">
-              
-            
-            </div>
-            <div className="col-sm-10"></div> */}
-      {/* <div className="">
-          <div className="image-container mt-3 mb-2">
-            {user && user.picture !== "" ? (
-              <Zoom>
-                <img
-                  className="img-fluid user_img"
-                  src={`${Img_url}${user?.picture}`}
-                  alt="users"
-                />
-              </Zoom>
-            ) : (
-              <Avatar
-                className="user_img"
-                sx={{ bgcolor: deepPurple[500], fontSize: "50px" }}
-              >
-                {user && user?.fullname?.[0].toUpperCase()}
-              </Avatar>
-            )}
-          </div>
-        </div>
-
-        <div className="lower-container">
-          <div>
-            <MainHeading title={user?.fullname.toUpperCase()} />
-            <p className="fs_18">@{user?.username}</p>
-            <p className="fs_14">{user?.email}</p>
-            {loading === true ? (
-              <CircularProgress color="secondary" />
-            ) : (
-              UNSECURED(userData).user._id !== id &&
-              (follow === true ? (
-                <PrimaryButton
-                  onClick={unfollowUser}
-                  title="Following"
-                  sx={{
-                    color: "#000 !important",
-                    margin: "8px auto 0px auto !important",
-                  }}
-                />
-              ) : (
-                <SecondaryButton
-                  title="Follow"
-                  classNames="mx-auto mt-2"
-                  onClick={followUser}
-                />
-              ))
-            )}
-          </div>
-          <div
-            style={{ gap: "20px" }}
-            className="d-flex align-items-center justify-content-center mt-3"
-          >
-            <Text1
-              onClick={() => setFollowerModal(true)}
-              classNames="pointer"
-              title={`${user?.followers?.length} Followers`}
-            />
-
-            <Text1
-              onClick={() => setFollowingModal(true)}
-              classNames="pointer"
-              title={`${user?.following?.length} Following`}
-            />
-          </div>
-        </div>
-        {UNSECURED(userData).user._id === id && (
-          <IconButton onClick={() => setModal(true)} className="edit_btn">
-            
-            <MoreVertIcon sx={{ color: `var(--601)` }} />
-          </IconButton>
-        )} */}
-      {/* </div>
-        </div>
-      </div> */}
       <FullPageLoader open={open} setOpen={setOpen} />
       <EditModal modal={modal} setModal={setModal} user={user} />
       <FollowersModal

@@ -13,5 +13,13 @@ export const useHomeFunctanility = () => {
     }
   };
 
-  return { getPosts };
+  const getAllPosts = async (user) => {
+    const response = await axios.get(`${Base_url}posts`);
+    if (response.status === 200) {
+      console.log(response.data.posts);
+      dispatch({ type: getAllPost, payload: response.data.posts });
+    }
+  };
+
+  return { getPosts, getAllPosts };
 };

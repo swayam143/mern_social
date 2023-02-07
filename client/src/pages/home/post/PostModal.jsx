@@ -66,7 +66,10 @@ export default function PostModal({ open, setOpen, user }) {
         const response = await axios.post(`${Base_url}posts`, uploadData);
         if (response.status === 200) {
           handleClose();
-          dispatch({ type: addNewPost, payload: response.data.newPost });
+          dispatch({
+            type: addNewPost,
+            payload: { ...response.data.newPost, user: user },
+          });
           Success(response.data.msg);
           setFile(null);
           setContent("");

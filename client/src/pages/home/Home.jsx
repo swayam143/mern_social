@@ -1,14 +1,13 @@
 import React, { useState } from "react";
 import { useSelector } from "react-redux";
 import { UNSECURED } from "../../constant/Util";
-import { Img_url } from "../../constant";
-import { Avatar } from "@mui/material";
-import { deepPurple } from "@mui/material/colors";
+
 import { TextFields2 } from "../../components/textField/Textfields";
 
 import "./Home.css";
 import Posts from "./post/Posts";
 import PostModal from "./post/PostModal";
+import { UserProfile } from "../sharedComponents/avatar/UserProfile";
 
 const Home = () => {
   const userData = useSelector((state) => state.auth.userData);
@@ -25,18 +24,9 @@ const Home = () => {
               style={{ gap: "10px" }}
               className=" d-flex align-items-center justify-content-between"
             >
-              {user && user.picture !== "" ? (
-                <img
-                  style={{ width: "40px", height: "40px", borderRadius: "50%" }}
-                  className="img-fluid "
-                  src={`${Img_url}${user?.picture}`}
-                  alt="users"
-                />
-              ) : (
-                <Avatar sx={{ bgcolor: deepPurple[500] }}>
-                  {user && user?.fullname?.[0].toUpperCase()}
-                </Avatar>
-              )}
+              <UserProfile
+                imgSize={{ width: "35px", borderRadius: "50%", height: "35px" }}
+              />
 
               <TextFields2
                 placeholder="What's on Your mind ?"

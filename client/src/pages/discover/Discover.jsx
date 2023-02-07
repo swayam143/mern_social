@@ -1,7 +1,13 @@
-import React from "react";
+import React, { useEffect } from "react";
+import { useHomeFunctanility } from "../home/useHomeApi";
 
 const Discover = () => {
-  return <div>Discover</div>;
+  const { getAllPosts } = useHomeFunctanility();
+
+  useEffect(() => {
+    getAllPosts();
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  return <>Discover</>;
 };
 
 export default Discover;

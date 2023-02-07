@@ -1,13 +1,11 @@
-import { Avatar, IconButton } from "@mui/material";
+import { IconButton } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { FullPageLoader } from "../../../components/loader/Loaders";
 import { Img_url } from "../../../constant";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
-import Zoom from "react-medium-image-zoom";
 import "react-medium-image-zoom/dist/styles.css";
 import { DimText, Heading1, Text1 } from "../../../components/text/Texts";
-import { deepPurple } from "@mui/material/colors";
 import moment from "moment";
 import { useHomeFunctanility } from "../useHomeApi";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
@@ -21,6 +19,7 @@ import { ThirdButton } from "../../../components/button/Buttons";
 import { useNavigate } from "react-router-dom";
 import Comments from "../../sharedComponents/comments/Comments";
 import { usePostFunctanilty } from "../../apis/usePostCustom";
+import { PostUserProfile } from "../../sharedComponents/avatar/UserProfile";
 
 const Posts = ({ user }) => {
   const { getPosts } = useHomeFunctanility();
@@ -60,34 +59,15 @@ const Posts = ({ user }) => {
                         style={{ gap: "15px" }}
                         className="my-2 d-flex align-items-center pointer"
                       >
-                        {data && data?.user?.picture !== "" ? (
-                          <Zoom>
-                            <img
-                              style={{
-                                width: "40px",
-                                height: "40px",
-                                borderRadius: "50%",
-                              }}
-                              className="img-fluid "
-                              src={` ${Img_url}${
-                                data &&
-                                (data?.user?._id === user?._id ||
-                                  data?.user === user._id)
-                                  ? user?.picture
-                                  : data?.user?.picture
-                              }`}
-                              alt="users"
-                            />{" "}
-                          </Zoom>
-                        ) : (
-                          <Avatar sx={{ bgcolor: deepPurple[500] }}>
-                            {data &&
-                            (data?.user?._id === user?._id ||
-                              data?.user === user._id)
-                              ? user?.fullname?.[0].toUpperCase()
-                              : data?.user?.fullname?.[0].toUpperCase()}
-                          </Avatar>
-                        )}
+                        <PostUserProfile
+                          data={data}
+                          user={user}
+                          imgSize={{
+                            width: "40px",
+                            height: "40px",
+                            borderRadius: "50%",
+                          }}
+                        />
                         <div>
                           <Heading1
                             title={

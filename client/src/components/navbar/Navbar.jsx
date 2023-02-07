@@ -4,9 +4,7 @@ import logo from "../../images/logo.png";
 import HomeIcon from "@mui/icons-material/Home";
 import ForumIcon from "@mui/icons-material/Forum";
 import ExploreIcon from "@mui/icons-material/Explore";
-import { deepPurple } from "@mui/material/colors";
 import heart from "../../images/heart.gif";
-import { Avatar } from "@mui/material";
 import { SecondaryButton } from "../button/Buttons";
 import { useDispatch, useSelector } from "react-redux";
 import { logoutUser, nullSearchUser, searchUsers } from "../../redux/authSlice";
@@ -18,7 +16,8 @@ import { useEffect } from "react";
 import { POST } from "../../constant/RequestAuthService";
 import UserList from "./UserList";
 import SearchIcon from "@mui/icons-material/Search";
-import { Img_url } from "../../constant";
+
+import { UserProfile } from "../../pages/sharedComponents/avatar/UserProfile";
 
 const Navbar = () => {
   const dispatch = useDispatch();
@@ -34,7 +33,6 @@ const Navbar = () => {
   const matches = useMediaQuery("(max-width:772px)");
   const ab991 = useMediaQuery("(max-width:991px)");
   const userData = useSelector((state) => state.auth.userData);
-  // console.log(UNSECURED(userData).user);
 
   useEffect(() => {
     const getUsers = async () => {
@@ -72,11 +70,6 @@ const Navbar = () => {
             onClick={() => navigate("/")}
           >
             <img src={logo} alt="Bootstrap" width="150" />
-            {/* <img
-              width="40"
-              src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/f4/BMW_logo_%28gray%29.svg/2048px-BMW_logo_%28gray%29.svg.png"
-              alt="logo"
-            /> */}
           </div>
           <div className={` ${!matches && "mx-3"} flex-grow-1 relative`}>
             <input
@@ -125,19 +118,9 @@ const Navbar = () => {
               }
               className="nav-item dropdown pointer d-flex align-items-center me-3 "
             >
-              {userData && UNSECURED(userData).user.picture !== "" ? (
-                <img
-                  style={{ width: "35px", borderRadius: "50%", height: "35px" }}
-                  className="img-fluid"
-                  src={`${Img_url}${UNSECURED(userData).user.picture}  `}
-                  alt="users"
-                />
-              ) : (
-                <Avatar sx={{ bgcolor: deepPurple[500] }}>
-                  {userData &&
-                    UNSECURED(userData)?.user?.fullname?.[0].toUpperCase()}
-                </Avatar>
-              )}
+              <UserProfile
+                imgSize={{ width: "35px", borderRadius: "50%", height: "35px" }}
+              />
             </li>
             <li className="nav-item dropdown pointer  d-flex align-items-center">
               {matches ? (

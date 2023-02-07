@@ -1,10 +1,7 @@
-import { Avatar } from "@mui/material";
-import { deepPurple } from "@mui/material/colors";
 import React from "react";
-import Zoom from "react-medium-image-zoom";
 import "react-medium-image-zoom/dist/styles.css";
 import { Text1 } from "../../../components/text/Texts";
-import { Base_url, Img_url } from "../../../constant";
+import { Base_url } from "../../../constant";
 import moment from "moment";
 import { useState } from "react";
 // import AllCommentModal from "./AllCommentModal";
@@ -29,6 +26,7 @@ import {
   replyParticularPostComments,
 } from "../../../redux/particularPostSlice";
 import { useNavigate } from "react-router-dom";
+import { PostUserProfile } from "../avatar/UserProfile";
 
 // import axios from "axios";
 
@@ -122,33 +120,15 @@ const Comments = ({ comments, moreComm, user, postId }) => {
           .map((data, i) => (
             <div key={i} className="mt-2">
               <div style={{ gap: "10px" }} className="d-flex">
-                {data && data?.user?.picture !== "" ? (
-                  <Zoom>
-                    <img
-                      style={{
-                        width: "40px",
-                        height: "40px",
-                        borderRadius: "50%",
-                      }}
-                      className="img-fluid "
-                      src={` ${Img_url}${
-                        data &&
-                        (data?.user?._id === user?._id ||
-                          data?.user === user._id)
-                          ? user?.picture
-                          : data?.user?.picture
-                      }`}
-                      alt="users"
-                    />{" "}
-                  </Zoom>
-                ) : (
-                  <Avatar sx={{ bgcolor: deepPurple[500] }}>
-                    {data &&
-                    (data?.user?._id === user?._id || data?.user === user._id)
-                      ? user?.fullname?.[0].toUpperCase()
-                      : data?.user?.fullname?.[0].toUpperCase()}
-                  </Avatar>
-                )}
+                <PostUserProfile
+                  data={data}
+                  user={user}
+                  imgSize={{
+                    width: "40px",
+                    height: "40px",
+                    borderRadius: "50%",
+                  }}
+                />
                 <div style={{ flexGrow: 1 }}>
                   <Text1
                     title={
@@ -246,39 +226,18 @@ const Comments = ({ comments, moreComm, user, postId }) => {
                         )
                         .map((item, i) => (
                           <div key={i}>
-                            {" "}
                             <hr className="my-2" />
                             <div className="  d-flex align-items-center justify-content-between flex-wrap">
                               <div style={{ gap: "10px" }} className="d-flex ">
-                                {" "}
-                                {item && item?.user?.picture !== "" ? (
-                                  <Zoom>
-                                    <img
-                                      style={{
-                                        width: "20px",
-                                        height: "20px",
-                                        borderRadius: "50%",
-                                      }}
-                                      className="img-fluid "
-                                      src={` ${Img_url}${
-                                        item &&
-                                        (item?.user?._id === user?._id ||
-                                          item?.user === user._id)
-                                          ? user?.picture
-                                          : item?.user?.picture
-                                      }`}
-                                      alt="users"
-                                    />{" "}
-                                  </Zoom>
-                                ) : (
-                                  <Avatar sx={{ bgcolor: deepPurple[500] }}>
-                                    {item &&
-                                    (item?.user?._id === user?._id ||
-                                      item?.user === user._id)
-                                      ? user?.fullname?.[0].toUpperCase()
-                                      : item?.user?.fullname?.[0].toUpperCase()}
-                                  </Avatar>
-                                )}
+                                <PostUserProfile
+                                  data={item}
+                                  user={user}
+                                  imgSize={{
+                                    width: "20px",
+                                    height: "20px",
+                                    borderRadius: "50%",
+                                  }}
+                                />
                                 <div>
                                   <Text1
                                     title={

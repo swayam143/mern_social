@@ -37,7 +37,7 @@ export const usePostFunctanilty = (
   //
 
   const HandleLike = async (data) => {
-    // console.log(data);
+    console.log(data);
     //
     //Fid index of pparticular post
     //
@@ -51,17 +51,18 @@ export const usePostFunctanilty = (
     );
 
     if (IsAlreadyLiked !== -1) {
-      dispatch({ type: unlikePost, payload: { findpostIndex, user } });
-      await axios.post(`${Base_url}unlikePost`, {
-        userId: user._id,
-        postId: data._id,
-      });
-    } else {
-      dispatch({ type: likePost, payload: { findpostIndex, user } });
-      await axios.post(`${Base_url}likePost`, {
-        userId: user._id,
-        postId: data._id,
-      });
+      // console.log("hy");
+      //   dispatch({ type: unlikePost, payload: { findpostIndex, user } });
+      //   await axios.post(`${Base_url}unlikePost`, {
+      //     userId: user._id,
+      //     postId: data._id,
+      //   });
+      // } else {
+      //   dispatch({ type: likePost, payload: { findpostIndex, user } });
+      //   await axios.post(`${Base_url}likePost`, {
+      //     userId: user._id,
+      //     postId: data._id,
+      //   });
     }
   };
 

@@ -1,5 +1,4 @@
-import { Avatar, IconButton } from "@mui/material";
-import { deepPurple } from "@mui/material/colors";
+import { IconButton } from "@mui/material";
 import axios from "axios";
 import moment from "moment";
 import React from "react";
@@ -30,6 +29,7 @@ import {
   unlikeParticularPost,
 } from "../../redux/particularPostSlice";
 import { Error } from "../../components/toast/Toasts";
+import { PostUserProfile } from "../sharedComponents/avatar/UserProfile";
 
 const PostDetails = () => {
   const { id } = useParams();
@@ -134,33 +134,15 @@ const PostDetails = () => {
                       style={{ gap: "15px" }}
                       className="my-2 d-flex align-items-center pointer"
                     >
-                      {particularPost &&
-                      particularPost?.user?.picture !== "" ? (
-                        <img
-                          style={{
-                            width: "40px",
-                            height: "40px",
-                            borderRadius: "50%",
-                          }}
-                          className="img-fluid "
-                          src={` ${Img_url}${
-                            particularPost &&
-                            (particularPost?.user?._id === user?._id ||
-                              particularPost?.user === user._id)
-                              ? user?.picture
-                              : particularPost?.user?.picture
-                          }`}
-                          alt="users"
-                        />
-                      ) : (
-                        <Avatar sx={{ bgcolor: deepPurple[500] }}>
-                          {particularPost &&
-                          (particularPost?.user?._id === user?._id ||
-                            particularPost?.user === user._id)
-                            ? user?.fullname?.[0].toUpperCase()
-                            : particularPost?.user?.fullname?.[0].toUpperCase()}
-                        </Avatar>
-                      )}
+                      <PostUserProfile
+                        data={particularPost}
+                        user={user}
+                        imgSize={{
+                          width: "40px",
+                          height: "40px",
+                          borderRadius: "50%",
+                        }}
+                      />
                       <div>
                         <Heading1
                           title={
