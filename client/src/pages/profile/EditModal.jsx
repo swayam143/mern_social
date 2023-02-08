@@ -145,7 +145,7 @@ export default function EditModal({ modal, setModal }) {
             className="login_form "
             onSubmit={handleSubmit}
           >
-            <div className="image-container mt-3 mb-2">
+            <div className="image-container mt-3 mb-2 d-flex align-items-center justify-content-center">
               <Zoom>
                 {file ? (
                   <>
@@ -165,7 +165,11 @@ export default function EditModal({ modal, setModal }) {
                     </IconButton>
                   </>
                 ) : (
-                  <UsersProfile data={user} className="user_img" />
+                  <UsersProfile
+                    data={user}
+                    className="user_img"
+                    avtr_classaName="user_img fs_80"
+                  />
                 )}
 
                 <IconButton

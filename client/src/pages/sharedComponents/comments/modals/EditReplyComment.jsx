@@ -5,10 +5,13 @@ import { TextArea1 } from "../../../../components/textField/Textfields";
 import { SecondaryButton } from "../../../../components/button/Buttons";
 import Validator from "validatorjs";
 import { Success, Validate } from "../../../../components/toast/Toasts";
-import { useDispatch } from "react-redux";
-import { upDateReplyComment } from "../../../../redux/postSlice";
+import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
 import { Base_url } from "../../../../constant";
+import {
+  addPostComment,
+  upDateReplyComment,
+} from "../../../../redux/updtedPostSlice";
 
 const style = {
   position: "absolute",
@@ -30,11 +33,13 @@ export default function EditReplyCommentModal({
   dataChange,
   postId,
   user,
+  post,
   commentId,
 }) {
   const [content, setContent] = React.useState("");
   const handleClose = () => setEdit(false);
-  // console.log(user);
+  const [newCommentAdd, setNewCommentAdd] = React.useState("");
+  const updatedPosts = useSelector((state) => state.updatedPost.updatedPosts);
 
   //user:user._id, commentId:modalData._id
 
@@ -56,10 +61,27 @@ export default function EditReplyCommentModal({
     if (validation.fails()) {
       Validate(validation);
     } else {
-      dispatch({
-        type: upDateReplyComment,
-        payload: { postId, data: modalData, user, content, commentId },
-      });
+      const findpostIndex = updatedPosts.findIndex(
+        (item) => item._id === post._id
+      );
+
+      if (findpostIndex === -1) {
+        setNewCommentAdd(modalData);
+        dispatch({
+          type: addPostComment,
+          payload: { post },
+        });
+      } else {
+        dispatch({
+          type: upDateReplyComment,
+          payload: { post, data: modalData, user, content, commentId },
+        });
+      }
+
+      // dispatch({
+      //   type: upDateReplyComment,
+      //   payload: { postId, data: modalData, user, content, commentId },
+      // });
 
       handleClose();
       const response = await axios.post(`${Base_url}updateReplycomment`, {
@@ -72,9 +94,16 @@ export default function EditReplyCommentModal({
       }
     }
   };
-  // console.log(modalData);
 
-  // console.log(newAllPost);
+  React.useEffect(() => {
+    if (newCommentAdd) {
+      dispatch({
+        type: upDateReplyComment,
+        payload: { post, data: newCommentAdd, user, content, commentId },
+      });
+    }
+  }, [newCommentAdd]); // eslint-disable-line react-hooks/exhaustive-deps
+
   return (
     <div>
       <Modal

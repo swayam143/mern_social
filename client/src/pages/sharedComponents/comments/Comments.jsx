@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import "react-medium-image-zoom/dist/styles.css";
 import { Text1 } from "../../../components/text/Texts";
 import { Base_url } from "../../../constant";
@@ -9,38 +9,44 @@ import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import EditCommentModal from "./modals/EditCommentModal";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  deleteComments,
-  likeComment,
-  replyComments,
-} from "../../../redux/postSlice";
+import // deleteComments,
+// likeComment,
+// replyComments,
+"../../../redux/postSlice";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import axios from "axios";
 import { TextFields2 } from "../../../components/textField/Textfields";
 import { ThirdButton } from "../../../components/button/Buttons";
 import { Error } from "../../../components/toast/Toasts";
 import EditReplyCommentModal from "./modals/EditReplyComment";
-import {
-  deleteParticularPostComments,
-  likeParticularPostComment,
-  replyParticularPostComments,
-} from "../../../redux/particularPostSlice";
+import // deleteParticularPostComments,
+// likeParticularPostComment,
+// replyParticularPostComments,
+"../../../redux/particularPostSlice";
 import { useNavigate } from "react-router-dom";
 import { PostUserProfile } from "../avatar/UserProfile";
+import {
+  addPostComment,
+  deleteUpdatedComments,
+  likeComment,
+  replyComments,
+} from "../../../redux/updtedPostSlice";
 
 // import axios from "axios";
 
-const Comments = ({ comments, moreComm, user, postId }) => {
+const Comments = ({ comments, moreComm, user, postId, post }) => {
   // const [open, setOpen] = useState(false);
   const [edit, setEdit] = useState(false);
   const [drop, setDrop] = useState("");
   const [dataChange, setDataChange] = useState(false);
   const [modalData, setModalData] = useState([]);
   const [reply, setReply] = useState(null);
-  const allPosts = useSelector((state) => state.post.allPosts);
+  const updatedPosts = useSelector((state) => state.updatedPost.updatedPosts);
   const [content, setContent] = useState("");
   const [editReply, setEditReply] = useState(false);
   const [commentId, setCommentId] = useState("");
+  const [newCommentAdd, setNewCommentAdd] = useState("");
+  const [newReplyCommentAdd, setNewReplyCommentAdd] = useState("");
 
   const dispatch = useDispatch();
 
@@ -49,12 +55,38 @@ const Comments = ({ comments, moreComm, user, postId }) => {
       commentId: data._id,
       user: user._id,
     });
-    if (moreComm === true) {
-      dispatch({ type: likeParticularPostComment, payload: { data, user } });
+
+    const findpostIndex = updatedPosts.findIndex(
+      (item) => item._id === post._id
+    );
+
+    if (findpostIndex === -1) {
+      setNewCommentAdd(data);
+      dispatch({ type: addPostComment, payload: { post, data, user } });
     } else {
-      dispatch({ type: likeComment, payload: { postId, data, user } });
+      dispatch({
+        type: likeComment,
+        payload: { post, data, user },
+      });
     }
+
+    // if (moreComm === true) {
+    //   dispatch({ type: likeParticularPostComment, payload: { data, user } });
+    // } else {
+    //   dispatch({ type: likeComment, payload: { postId, data, user } });
+    // }
   };
+
+  useEffect(() => {
+    if (newCommentAdd) {
+      dispatch({
+        type: likeComment,
+        payload: { post, data: newCommentAdd, user },
+      });
+    }
+  }, [newCommentAdd]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // console.log(newCommentAdd && newCommentAdd);
 
   const replyComment = async (data) => {
     if (content.toLowerCase().replace(/ /g, "") === "") {
@@ -65,21 +97,45 @@ const Comments = ({ comments, moreComm, user, postId }) => {
         commentId: data._id,
         user: user._id,
       });
-      if (moreComm === true) {
-        console.log(true);
-        dispatch({
-          type: replyParticularPostComments,
-          payload: { data, user, content },
-        });
+
+      const findpostIndex = updatedPosts.findIndex(
+        (item) => item._id === post._id
+      );
+
+      if (findpostIndex === -1) {
+        setNewReplyCommentAdd(data);
+        dispatch({ type: addPostComment, payload: { post, data, user } });
       } else {
         dispatch({
           type: replyComments,
-          payload: { postId, data, user, content },
+          payload: { post, data, user, content },
         });
       }
+
+      // if (moreComm === true) {
+      //   // console.log(true);
+      //   dispatch({
+      //     type: replyParticularPostComments,
+      //     payload: { data, user, content },
+      //   });
+      // } else {
+      //   dispatch({
+      //     type: replyComments,
+      //     payload: { postId, data, user, content },
+      //   });
+      // }
       setContent("");
     }
   };
+
+  useEffect(() => {
+    if (newReplyCommentAdd) {
+      dispatch({
+        type: replyComments,
+        payload: { post, data: newReplyCommentAdd, user, content },
+      });
+    }
+  }, [newReplyCommentAdd]); // eslint-disable-line react-hooks/exhaustive-deps
   // dispatch({ type: likeComment, payload: { postId, data, user } });
 
   const editCmmment = (data) => {
@@ -101,16 +157,17 @@ const Comments = ({ comments, moreComm, user, postId }) => {
     await axios.post(`${Base_url}deleteComment`, {
       commentId: data._id,
     });
-    if (moreComm === true) {
-      dispatch({ type: deleteParticularPostComments, payload: { data } });
-      // console.log(data);
-    } else {
-      const findpostIndex = allPosts.findIndex((item) => item._id === postId);
-      dispatch({ type: deleteComments, payload: { findpostIndex, data } });
-    }
+    dispatch({ type: deleteUpdatedComments, payload: { post, data } });
+
+    // if (moreComm === true) {
+    //   dispatch({ type: deleteParticularPostComments, payload: { data } });
+    //   // console.log(data);
+    // } else {
+    //   const findpostIndex = allPosts.findIndex((item) => item._id === postId);
+    //   dispatch({ type: deleteComments, payload: { findpostIndex, data } });
+    // }
   };
 
-  // console.log(allPosts);
   const navigate = useNavigate();
   return (
     <div>
@@ -347,6 +404,7 @@ const Comments = ({ comments, moreComm, user, postId }) => {
         dataChange={dataChange}
         postId={postId}
         user={user}
+        post={post}
         moreComm={moreComm}
       />
       <EditReplyCommentModal
@@ -359,6 +417,7 @@ const Comments = ({ comments, moreComm, user, postId }) => {
         postId={postId}
         user={user}
         commentId={commentId}
+        post={post}
       />
     </div>
   );

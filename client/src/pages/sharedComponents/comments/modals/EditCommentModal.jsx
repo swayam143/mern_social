@@ -5,11 +5,15 @@ import { TextArea1 } from "../../../../components/textField/Textfields";
 import { SecondaryButton } from "../../../../components/button/Buttons";
 import Validator from "validatorjs";
 import { Success, Validate } from "../../../../components/toast/Toasts";
-import { useDispatch } from "react-redux";
-import { upDateComment } from "../../../../redux/postSlice";
+import { useDispatch, useSelector } from "react-redux";
+
 import axios from "axios";
 import { Base_url } from "../../../../constant";
-import { upDateParticularPostComment } from "../../../../redux/particularPostSlice";
+// import { upDateParticularPostComment } from "../../../../redux/particularPostSlice";
+import {
+  addPostComment,
+  upDateComment,
+} from "../../../../redux/updtedPostSlice";
 
 const style = {
   position: "absolute",
@@ -31,11 +35,13 @@ export default function EditCommentModal({
   dataChange,
   postId,
   user,
+  post,
   moreComm,
 }) {
   const [content, setContent] = React.useState("");
   const handleClose = () => setEdit(false);
-  // console.log(user);
+  const [newCommentAdd, setNewCommentAdd] = React.useState("");
+  const updatedPosts = useSelector((state) => state.updatedPost.updatedPosts);
 
   //user:user._id, commentId:modalData._id
 
@@ -62,25 +68,41 @@ export default function EditCommentModal({
         content,
         user: user._id,
       });
+
       if ((response.status = 200)) {
         Success(response.data.mssg);
         handleClose();
       }
-      if (moreComm === true) {
+      const findpostIndex = updatedPosts.findIndex(
+        (item) => item._id === post._id
+      );
+
+      if (findpostIndex === -1) {
+        setNewCommentAdd(modalData);
         dispatch({
-          type: upDateParticularPostComment,
-          payload: { data: modalData, user, content },
+          type: addPostComment,
+          payload: { post },
         });
       } else {
         dispatch({
           type: upDateComment,
-          payload: { postId, data: modalData, user, content },
+          payload: { post, data: modalData, user, content },
         });
       }
     }
   };
 
-  // console.log(newAllPost);
+  React.useEffect(() => {
+    if (newCommentAdd) {
+      dispatch({
+        type: upDateComment,
+        payload: { post, data: newCommentAdd, user, content },
+      });
+    }
+  }, [newCommentAdd]); // eslint-disable-line react-hooks/exhaustive-deps
+  // console.log(updatedPosts);
+
+  // console.log(modalData);
   return (
     <div>
       <Modal

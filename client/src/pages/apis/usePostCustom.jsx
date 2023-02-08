@@ -1,14 +1,14 @@
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
-import {
-  unlikePost,
-  likePost,
-  addComment,
-  deletePosts,
-} from "../../redux/postSlice";
+// import { deletePosts } from "../../redux/postSlice";
 import { Base_url } from "../../constant";
 import { UNSECURED } from "../../constant/Util";
 import { Success } from "../../components/toast/Toasts";
+import {
+  addComment,
+  deletePosts,
+  likeUpdatedPost,
+} from "../../redux/updtedPostSlice";
 
 export const usePostFunctanilty = (
   setDrop,
@@ -17,7 +17,6 @@ export const usePostFunctanilty = (
   content,
   setContent
 ) => {
-  const allPosts = useSelector((state) => state.post.allPosts);
   const userData = useSelector((state) => state.auth.userData);
   const user = UNSECURED(userData).user;
 
@@ -37,41 +36,13 @@ export const usePostFunctanilty = (
   //
 
   const HandleLike = async (data) => {
-    console.log(data);
-    //
-    //Fid index of pparticular post
-    //
-    const findpostIndex = allPosts.findIndex((item) => item._id === data._id);
-    //
-    //Is likes already exist
-    //
-
-    const IsAlreadyLiked = data.likes.findIndex(
-      (item) => item._id === user._id
-    );
-
-    if (IsAlreadyLiked !== -1) {
-      // console.log("hy");
-      //   dispatch({ type: unlikePost, payload: { findpostIndex, user } });
-      //   await axios.post(`${Base_url}unlikePost`, {
-      //     userId: user._id,
-      //     postId: data._id,
-      //   });
-      // } else {
-      //   dispatch({ type: likePost, payload: { findpostIndex, user } });
-      //   await axios.post(`${Base_url}likePost`, {
-      //     userId: user._id,
-      //     postId: data._id,
-      //   });
-    }
+    dispatch({ type: likeUpdatedPost, payload: { data, user } });
   };
 
   const handleComment = async (post) => {
     if (content.toLowerCase().replace(/ /g, "") === "") {
       Success("Please enter a valid comment");
     } else {
-      const findpostIndex = allPosts.findIndex((item) => item._id === post._id);
-
       const response = await axios.post(`${Base_url}comment`, {
         postId: post._id,
         content,
@@ -90,7 +61,7 @@ export const usePostFunctanilty = (
           type: addComment,
           payload: {
             newComment,
-            findpostIndex,
+            post,
           },
         });
         setContent("");
@@ -103,7 +74,7 @@ export const usePostFunctanilty = (
       userId: user._id,
       postId: data._id,
     });
-    dispatch({ type: deletePosts, payload: data });
+    await dispatch({ type: deletePosts, payload: data });
   };
 
   return { handleEditPost, HandleLike, handleComment, deletePost };

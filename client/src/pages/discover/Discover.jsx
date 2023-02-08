@@ -1,13 +1,21 @@
-import React, { useEffect } from "react";
-import { useHomeFunctanility } from "../home/useHomeApi";
+import React from "react";
+import { useSelector } from "react-redux";
+import { UNSECURED } from "../../constant/Util";
+import Posts from "../home/post/Posts";
 
 const Discover = () => {
-  const { getAllPosts } = useHomeFunctanility();
+  const userData = useSelector((state) => state.auth.userData);
 
-  useEffect(() => {
-    getAllPosts();
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
-  return <>Discover</>;
+  const user = UNSECURED(userData).user;
+  return (
+    <div className="container mt-4">
+      <div className="row">
+        <div className="col-sm-8 col-lg-6">
+          <Posts user={user} discover={true} />
+        </div>
+      </div>
+    </div>
+  );
 };
 
 export default Discover;

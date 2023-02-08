@@ -22,9 +22,15 @@ export const UserProfile = ({ imgSize }) => {
   );
 };
 
-export const UsersProfile = ({ data, imgSize, onClick, className }) => {
+export const UsersProfile = ({
+  data,
+  imgSize,
+  onClick,
+  className,
+  avtr_classaName,
+}) => {
   return data && data.picture !== "" ? (
-    <Zoom>
+    <Zoom style={{ display: "inline-block" }}>
       <img
         style={imgSize}
         className={className}
@@ -33,7 +39,11 @@ export const UsersProfile = ({ data, imgSize, onClick, className }) => {
       />{" "}
     </Zoom>
   ) : (
-    <Avatar onClick={onClick} sx={{ bgcolor: deepPurple[500] }}>
+    <Avatar
+      className={avtr_classaName}
+      onClick={onClick}
+      sx={{ bgcolor: deepPurple[500] }}
+    >
       {data && data?.fullname?.[0].toUpperCase()}
     </Avatar>
   );

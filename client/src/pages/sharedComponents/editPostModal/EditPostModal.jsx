@@ -12,9 +12,8 @@ import Validator from "validatorjs";
 import { Success, Validate } from "../../../components/toast/Toasts";
 import axios from "axios";
 import { Base_url, Img_url } from "../../../constant";
-import { updatePost } from "../../../redux/postSlice";
 import { useDispatch } from "react-redux";
-import { updateParticularPost } from "../../../redux/particularPostSlice";
+import { updateUpdatedPost } from "../../../redux/updtedPostSlice";
 
 const style = {
   position: "absolute",
@@ -83,18 +82,16 @@ export default function EditPostModal({ open, setOpen, postData }) {
           uploadData
         );
         if (response.status === 200) {
-          console.log(response.data.upDatedPost);
+          // console.log(response.data.upDatedPost);
           Success(response.data.msg);
+
           dispatch({
-            type: updatePost,
+            type: updateUpdatedPost,
             payload: response.data.upDatedPost,
           });
 
           handleClose();
-          dispatch({
-            type: updateParticularPost,
-            payload: response.data.upDatedPost,
-          });
+
           setContent("");
           setImages(null);
           setPreviousPicture("");

@@ -2,14 +2,13 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
   allPosts: null,
-  indexV: null,
 };
 
-export const postSlice = createSlice({
-  name: "allPosts",
+export const userPostSlice = createSlice({
+  name: "userPosts",
   initialState,
   reducers: {
-    getAllPost: (state, action) => {
+    getuserPost: (state, action) => {
       state.allPosts = action.payload;
       // const newPost = [...action.payload];
       // const checkedArray = newPost.map((x, i) => {
@@ -27,6 +26,6 @@ export const postSlice = createSlice({
   },
 });
 
-export const { getAllPost, addNewPost } = postSlice.actions;
+export const { getuserPost } = userPostSlice.actions;
 
-export default postSlice.reducer;
+export default userPostSlice.reducer;

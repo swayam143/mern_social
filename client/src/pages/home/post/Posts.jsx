@@ -21,34 +21,71 @@ import Comments from "../../sharedComponents/comments/Comments";
 import { usePostFunctanilty } from "../../apis/usePostCustom";
 import { PostUserProfile } from "../../sharedComponents/avatar/UserProfile";
 
-const Posts = ({ user }) => {
-  const { getPosts } = useHomeFunctanility();
+const Posts = ({ user, discover, onlyUserPost }) => {
+  const { getPosts, getAllPosts } = useHomeFunctanility();
   const [drop, setDrop] = useState("");
   const [edit, setEdit] = useState(false);
   const [postData, setPostData] = useState(null);
   const [content, setContent] = useState("");
   const [moreComm, setMoreComm] = useState(false);
   const [contentVal, setContentVal] = useState("");
-  const allPosts = useSelector((state) => state.post.allPosts);
+  const [posts, setPosts] = useState(null);
+  const allPosts = useSelector((state) =>
+    discover === true
+      ? state.discoverPost.disoverPost
+      : onlyUserPost === true
+      ? state.userPost.allPosts
+      : state.post.allPosts
+  );
+
+  // console.log(useSelector((state) => state.userPost.allPosts));
+
+  const updatedPosts = useSelector((state) => state.updatedPost.updatedPosts);
+  const deletePosts = useSelector((state) => state.updatedPost.deletePosts);
+
+  useEffect(() => {
+    if (deletePosts !== null) {
+      setPosts(posts?.filter((item) => item._id !== deletePosts));
+    }
+  }, [deletePosts]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => {
+    const newPost = allPosts?.map((x) => {
+      const findUpdatedPost = updatedPosts.find((item) => item._id === x._id);
+      if (findUpdatedPost) {
+        x = findUpdatedPost;
+      }
+      return x;
+    });
+    setPosts(newPost);
+  }, [allPosts, updatedPosts]);
+
+  // console.log(typeof discover === "undefined");
 
   const { handleEditPost, HandleLike, handleComment, deletePost } =
     usePostFunctanilty(setDrop, setEdit, setPostData, content, setContent);
 
   useEffect(() => {
-    getPosts(user);
+    typeof discover === "undefined" &&
+      typeof onlyUserPost === "undefined" &&
+      getPosts(user);
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => {
+    discover === true && getAllPosts();
+  }, [discover]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const navigate = useNavigate();
 
   return (
     <div>
-      {allPosts && typeof allPosts === "object" ? (
-        allPosts.length === 0 ? (
+      {posts && typeof posts === "object" ? (
+        posts.length === 0 ? (
           <h1>No Post Found</h1>
         ) : (
           <>
-            {allPosts &&
-              allPosts.map((data, i) => (
+            {posts &&
+              posts.map((data, i) => (
                 <div className="card_post" key={i}>
                   <div className="card_header">
                     <div
@@ -200,6 +237,7 @@ const Posts = ({ user }) => {
                     comments={data.comments}
                     moreComm={moreComm}
                     setMoreComm={setMoreComm}
+                    post={data}
                   />
                 </div>
               ))}

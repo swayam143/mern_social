@@ -22,14 +22,9 @@ import { TextFields2 } from "../../components/textField/Textfields";
 import { ThirdButton } from "../../components/button/Buttons";
 import Comments from "../sharedComponents/comments/Comments";
 import EditPostModal from "../sharedComponents/editPostModal/EditPostModal";
-import {
-  addParticularPostComment,
-  getPost,
-  likeParticularPost,
-  unlikeParticularPost,
-} from "../../redux/particularPostSlice";
-import { Error } from "../../components/toast/Toasts";
+import { getPost } from "../../redux/particularPostSlice";
 import { PostUserProfile } from "../sharedComponents/avatar/UserProfile";
+import { usePostFunctanilty } from "../apis/usePostCustom";
 
 const PostDetails = () => {
   const { id } = useParams();
@@ -39,6 +34,24 @@ const PostDetails = () => {
   const [edit, setEdit] = useState(false);
   const [postData, setPostData] = useState(null);
   const [content, setContent] = useState("");
+  const updatedPosts = useSelector((state) => state.updatedPost.updatedPosts);
+
+  const { handleEditPost, HandleLike, handleComment } = usePostFunctanilty(
+    setDrop,
+    setEdit,
+    setPostData,
+    content,
+    setContent
+  );
+
+  useEffect(() => {
+    const findUpdatedPost = updatedPosts?.find(
+      (item) => item?._id === particularPost?._id
+    );
+    if (findUpdatedPost) {
+      setParticularPost(findUpdatedPost);
+    }
+  }, [updatedPosts]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const user = UNSECURED(userData).user;
 
@@ -58,65 +71,6 @@ const PostDetails = () => {
     };
     GetDetails();
   }, [id]); // eslint-disable-line react-hooks/exhaustive-deps
-
-  const handleEditPost = (data) => {
-    // console.log(data);
-    setDrop("");
-    setEdit(true);
-    setPostData(data);
-  };
-
-  const handleLike = async (data) => {
-    const IsAlreadyLiked = data.likes.findIndex(
-      (item) => item._id === user._id
-    );
-    // console.log(IsAlreadyLiked);
-
-    if (IsAlreadyLiked !== -1) {
-      dispatch({ type: unlikeParticularPost, payload: { user } });
-      await axios.post(`${Base_url}unlikePost`, {
-        userId: user._id,
-        postId: data._id,
-      });
-    } else {
-      dispatch({ type: likeParticularPost, payload: { user } });
-      await axios.post(`${Base_url}likePost`, {
-        userId: user._id,
-        postId: data._id,
-      });
-    }
-  };
-
-  const handleComment = async (data) => {
-    if (content.toLowerCase().replace(/ /g, "") === "") {
-      Error("Please enter a valid comment");
-    } else {
-      const response = await axios.post(`${Base_url}comment`, {
-        postId: data._id,
-        content,
-        user: user._id,
-      });
-      if (response.status === 200) {
-        const newComment = {
-          content,
-          likes: [],
-          user,
-          reply: [],
-          createdAt: new Date().toISOString(),
-          _id: response.data.newComment._id,
-        };
-        dispatch({
-          type: addParticularPostComment,
-          payload: {
-            newComment,
-          },
-        });
-        setContent("");
-      }
-    }
-  };
-
-  // console.log(particularPost);
 
   return (
     <div className="container mt-4 ">
@@ -216,14 +170,14 @@ const PostDetails = () => {
                               )
                           ) ? (
                             <div
-                              onClick={() => handleLike(particularPost)}
+                              onClick={() => HandleLike(particularPost)}
                               className="icon_div"
                             >
                               <FavoriteIcon sx={{ color: "red" }} />
                             </div>
                           ) : (
                             <div
-                              onClick={() => handleLike(particularPost)}
+                              onClick={() => HandleLike(particularPost)}
                               className="icon_div"
                             >
                               <FavoriteBorderIcon />
@@ -285,7 +239,8 @@ const PostDetails = () => {
                         postId={particularPost._id}
                         comments={particularPost.comments}
                         moreComm={true}
-                      />{" "}
+                        post={particularPost}
+                      />
                     </div>
                   </div>
                 </div>

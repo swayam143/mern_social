@@ -21,6 +21,8 @@ import { isLogin } from "../../redux/authSlice";
 import FollowersModal from "./FollwersModal";
 import FollowingModal from "./FollowingModal";
 import { UsersProfile } from "../sharedComponents/avatar/UserProfile";
+import Posts from "../home/post/Posts";
+import { useHomeFunctanility } from "../home/useHomeApi";
 
 const Profile = () => {
   const [open, setOpen] = useState(false);
@@ -30,12 +32,20 @@ const Profile = () => {
   const [loading, setLoading] = useState(false);
   const [followermodal, setFollowerModal] = useState(false);
   const [followingmodal, setFollowingModal] = useState(false);
+  const { getUserPosts } = useHomeFunctanility();
 
   const { id } = useParams();
 
   const dispatch = useDispatch();
 
   const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    if (id !== null && id !== null) {
+      getUserPosts(id);
+    }
+  }, [id]); // eslint-disable-line react-hooks/exhaustive-deps
+
   useEffect(() => {
     const getUser = async () => {
       try {
@@ -101,19 +111,96 @@ const Profile = () => {
     setLoading(false);
   };
 
-  // console.log(user);
-
   return (
     <>
-      {/* <div className="container">
-        <div className="row p-2">
-          <div className=" relative w-100 p-2"> */}
-      <div className="container mt-4">
+      <div className="container mt-4 ">
+        {" "}
+        <div className="row d-flex align-items-center justify-content-center user_pr_center pb-5">
+          <UsersProfile
+            data={user}
+            className="user_img"
+            avtr_classaName="user_img fs_80"
+          />
+          <div>
+            {loading === true ? (
+              <CircularProgress color="secondary" />
+            ) : (
+              UNSECURED(userData).user._id !== id &&
+              (follow === true ? (
+                <PrimaryButton
+                  onClick={unfollowUser}
+                  classNames=" mt-2 w-100"
+                  title="Following"
+                  sx={{
+                    color: "#000 !important",
+                  }}
+                />
+              ) : (
+                <SecondaryButton
+                  title="Follow"
+                  classNames="mx-auto mt-4 "
+                  onClick={followUser}
+                />
+              ))
+            )}
+            {UNSECURED(userData).user._id === id && (
+              <SecondaryButton
+                title="Edit Profile"
+                classNames="mx-auto mt-4 "
+                onClick={() => setModal(true)}
+              />
+            )}
+          </div>
+          <MainHeading
+            title={user?.fullname.toUpperCase()}
+            classNames="text-center mt-2"
+          />
+          <div
+            style={{ gap: "20px" }}
+            className="d-flex align-items-center justify-content-center mt-2"
+          >
+            <p className="fs_18 ">@{user?.username}</p>
+            <p className="fs_14">{user?.email}</p>
+          </div>
+          <div
+            style={{ gap: "20px" }}
+            className="d-flex align-items-center justify-content-center mt-2"
+          >
+            {" "}
+            <div className="follower_cont">
+              <Text1
+                onClick={() => setFollowerModal(true)}
+                classNames="pointer"
+                title={`${user?.followers?.length} Followers`}
+              />{" "}
+            </div>{" "}
+            <div className="follower_cont">
+              <Text1
+                onClick={() => setFollowingModal(true)}
+                classNames="pointer"
+                title={`${user?.following?.length} Following`}
+              />
+            </div>
+          </div>
+        </div>
+        <hr />
+        <div className="row">
+          <MainHeading title="POST" classNames=" my-3" />
+          <div className=" col-md-6 col-xl-4">
+            <Posts user={user} onlyUserPost={true} />
+          </div>
+        </div>
+      </div>
+      {/* <div className="container mt-4">
         <div className="row">
           <div className="col-sm-6 col-lg-3 mb-3">
             {" "}
             <div className=" user_img_profile">
-              <UsersProfile data={user} className="user_img" />
+              <UsersProfile
+                data={user}
+                className="user_img"
+                avtr_classaName="user_img fs_80"
+              />
             </div>
             {loading === true ? (
               <CircularProgress color="secondary" />
@@ -126,7 +213,6 @@ const Profile = () => {
                   title="Following"
                   sx={{
                     color: "#000 !important",
-                    // margin: "8px 0px 0px 0px !important",
                   }}
                 />
               ) : (
@@ -138,9 +224,6 @@ const Profile = () => {
               ))
             )}
             {UNSECURED(userData).user._id === id && (
-              // <IconButton onClick={() => setModal(true)} className="">
-              //   <MoreVertIcon sx={{ color: `var(--601)` }} />
-              // </IconButton>
               <SecondaryButton
                 title="Edit Profile"
                 classNames="mx-auto mt-4 "
@@ -183,7 +266,7 @@ const Profile = () => {
             </div>
           </div>
         </div>
-      </div>
+      </div> */}
 
       <FullPageLoader open={open} setOpen={setOpen} />
       <EditModal modal={modal} setModal={setModal} user={user} />
