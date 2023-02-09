@@ -77,179 +77,177 @@ const Posts = ({ user, discover, onlyUserPost }) => {
 
   const navigate = useNavigate();
 
-  return (
-    <div>
-      {posts && typeof posts === "object" ? (
-        posts.length === 0 ? (
-          <h1>No Post Found</h1>
-        ) : (
-          <>
-            {posts &&
-              posts.map((data, i) => (
-                <div className="card_post" key={i}>
-                  <div className="card_header">
+  return posts && typeof posts === "object" ? (
+    posts.length === 0 ? (
+      <h1>No Post Found</h1>
+    ) : (
+      <>
+        {posts &&
+          posts.map((data, i) => (
+            <div
+              key={i}
+              className={`${
+                (onlyUserPost === true || discover === true) &&
+                " col-md-6 col-xl-4"
+              }`}
+            >
+              <div className="card_post" key={i}>
+                <div className="card_header">
+                  <div
+                    style={{ gap: "15px" }}
+                    className="d-flex align-items-center"
+                  >
                     <div
                       style={{ gap: "15px" }}
-                      className="d-flex align-items-center"
+                      className="my-2 d-flex align-items-center pointer"
                     >
-                      <div
-                        style={{ gap: "15px" }}
-                        className="my-2 d-flex align-items-center pointer"
-                      >
-                        <PostUserProfile
-                          data={data}
-                          user={user}
-                          imgSize={{
-                            width: "40px",
-                            height: "40px",
-                            borderRadius: "50%",
-                          }}
+                      <PostUserProfile
+                        data={data}
+                        user={user}
+                        imgSize={{
+                          width: "40px",
+                          height: "40px",
+                          borderRadius: "50%",
+                        }}
+                      />
+                      <div>
+                        <Heading1
+                          title={
+                            data &&
+                            (data?.user?._id === user?._id ||
+                              data?.user === user._id)
+                              ? user?.fullname
+                              : data?.user?.fullname
+                          }
                         />
-                        <div>
-                          <Heading1
-                            title={
-                              data &&
-                              (data?.user?._id === user?._id ||
-                                data?.user === user._id)
-                                ? user?.fullname
-                                : data?.user?.fullname
-                            }
-                          />
-                          <DimText title={moment(data.createdAt).fromNow()} />
-                        </div>
+                        <DimText title={moment(data.createdAt).fromNow()} />
                       </div>
                     </div>
-                    {/* <OutsideClickHandler onOutsideClick={() => setDrop("")}> */}
-                    {(data?.user?._id === user?._id ||
-                      data?.user === user._id) && (
-                      <div>
-                        <IconButton
-                          className="relative"
-                          onClick={() => setDrop(drop === "" ? data._id : "")}
-                        >
-                          <MoreVertIcon sx={{ color: `var(--601)` }} />
-                        </IconButton>
+                  </div>
+                  {/* <OutsideClickHandler onOutsideClick={() => setDrop("")}> */}
+                  {(data?.user?._id === user?._id ||
+                    data?.user === user._id) && (
+                    <div>
+                      <IconButton
+                        className="relative"
+                        onClick={() => setDrop(drop === "" ? data._id : "")}
+                      >
+                        <MoreVertIcon sx={{ color: `var(--601)` }} />
+                      </IconButton>
 
-                        {drop === data._id && (
-                          <div className="drop_details">
-                            <Text1
-                              onClick={() => handleEditPost(data)}
-                              classNames="pointer my-2"
-                              title="Edit Post"
-                            />
+                      {drop === data._id && (
+                        <div className="drop_details">
+                          <Text1
+                            onClick={() => handleEditPost(data)}
+                            classNames="pointer my-2"
+                            title="Edit Post"
+                          />
 
-                            <Text1
-                              onClick={() => deletePost(data)}
-                              classNames="pointer my-2"
-                              title="Remove Post"
-                            />
-                            <Text1
-                              classNames="pointer my-2"
-                              title="Copy Link"
-                            />
-                          </div>
-                        )}
+                          <Text1
+                            onClick={() => deletePost(data)}
+                            classNames="pointer my-2"
+                            title="Remove Post"
+                          />
+                          <Text1 classNames="pointer my-2" title="Copy Link" />
+                        </div>
+                      )}
+                    </div>
+                  )}
+
+                  {/* </OutsideClickHandler> */}
+                </div>
+                <Text1 title={data?.content} />
+                <div className="d-flex align-items-center justify-content-center post_img_container pointer ">
+                  <img
+                    onClick={() => navigate(`/post/${data._id}`)}
+                    style={{ maxHeight: "300px", minHeight: "100px" }}
+                    src={`${Img_url}${data?.picture}`}
+                    alt="post"
+                    className="img-fluid"
+                  />
+
+                  <div className="icon_btn_div">
+                    {data.likes.find(
+                      (item) =>
+                        item._id === user._id ||
+                        data.likes.find((item) => item === user._id)
+                    ) ? (
+                      <div
+                        onClick={() => HandleLike(data)}
+                        className="icon_div"
+                      >
+                        <FavoriteIcon sx={{ color: "red" }} />
+                      </div>
+                    ) : (
+                      <div
+                        onClick={() => HandleLike(data)}
+                        className="icon_div"
+                      >
+                        <FavoriteBorderIcon />
                       </div>
                     )}
 
-                    {/* </OutsideClickHandler> */}
-                  </div>
-                  <Text1 title={data?.content} />
-                  <div className="d-flex align-items-center justify-content-center post_img_container pointer ">
-                    <img
-                      onClick={() => navigate(`/post/${data._id}`)}
-                      style={{ maxHeight: "300px", minHeight: "100px" }}
-                      src={`${Img_url}${data?.picture}`}
-                      alt="post"
-                      className="img-fluid"
-                    />
-
-                    <div className="icon_btn_div">
-                      {data.likes.find(
-                        (item) =>
-                          item._id === user._id ||
-                          data.likes.find((item) => item === user._id)
-                      ) ? (
-                        <div
-                          onClick={() => HandleLike(data)}
-                          className="icon_div"
-                        >
-                          <FavoriteIcon sx={{ color: "red" }} />
-                        </div>
-                      ) : (
-                        <div
-                          onClick={() => HandleLike(data)}
-                          className="icon_div"
-                        >
-                          <FavoriteBorderIcon />
-                        </div>
-                      )}
-
-                      <div
-                        onClick={() => setMoreComm(!moreComm)}
-                        className="icon_div"
-                      >
-                        <ChatBubbleOutlineIcon />
-                      </div>
-                      <div className="icon_div">
-                        <IosShareIcon />
-                      </div>
+                    <div
+                      onClick={() => setMoreComm(!moreComm)}
+                      className="icon_div"
+                    >
+                      <ChatBubbleOutlineIcon />
                     </div>
-                    <div className="saved_btn_div">
-                      <div className="icon_div">
-                        <BookmarkBorderIcon />
-                      </div>
+                    <div className="icon_div">
+                      <IosShareIcon />
                     </div>
                   </div>
-                  <div className="mt-4">
-                    <div className="d-flex align-items-center justify-content-between pt-1 px-1">
-                      <Text1
-                        classNames="pointer"
-                        title={` ${data.likes.length} likes`}
-                      />
-                      <Text1
-                        classNames="pointer"
-                        title={` ${data.comments.length} comments`}
-                      />
+                  <div className="saved_btn_div">
+                    <div className="icon_div">
+                      <BookmarkBorderIcon />
                     </div>
                   </div>
-
-                  <form
-                    style={{ gap: "10px" }}
-                    className="mt-2 d-flex align-items-center"
-                  >
-                    <TextFields2
-                      onClick={() => setContentVal(data._id)}
-                      value={contentVal === data._id ? content : ""}
-                      onChange={(e) => setContent(e.target.value)}
-                      placeholder="Comment"
-                      // onClick={() => setOpen(true)}
-                    />
-                    <ThirdButton
-                      title="Post"
-                      type="submit"
-                      onClick={() => handleComment(data)}
-                    />
-                  </form>
-                  <Comments
-                    user={user}
-                    postId={data._id}
-                    comments={data.comments}
-                    moreComm={moreComm}
-                    setMoreComm={setMoreComm}
-                    post={data}
-                  />
                 </div>
-              ))}
-          </>
-        )
-      ) : (
-        <FullPageLoader open={true} />
-      )}
-      <EditPostModal open={edit} setOpen={setEdit} postData={postData} />
+                <div className="mt-4">
+                  <div className="d-flex align-items-center justify-content-between pt-1 px-1">
+                    <Text1
+                      classNames="pointer"
+                      title={` ${data.likes.length} likes`}
+                    />
+                    <Text1
+                      classNames="pointer"
+                      title={` ${data.comments.length} comments`}
+                    />
+                  </div>
+                </div>
 
-      {/* <FullPageLoader open={loading} setOpen={setLoading} /> */}
-    </div>
+                <form
+                  style={{ gap: "10px" }}
+                  className="mt-2 d-flex align-items-center"
+                >
+                  <TextFields2
+                    onClick={() => setContentVal(data._id)}
+                    value={contentVal === data._id ? content : ""}
+                    onChange={(e) => setContent(e.target.value)}
+                    placeholder="Comment"
+                  />
+                  <ThirdButton
+                    title="Post"
+                    type="submit"
+                    onClick={() => handleComment(data)}
+                  />
+                </form>
+                <Comments
+                  user={user}
+                  postId={data._id}
+                  comments={data.comments}
+                  moreComm={moreComm}
+                  setMoreComm={setMoreComm}
+                  post={data}
+                />
+              </div>
+            </div>
+          ))}
+        <EditPostModal open={edit} setOpen={setEdit} postData={postData} />
+      </>
+    )
+  ) : (
+    <FullPageLoader open={true} />
   );
 };
 

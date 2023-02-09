@@ -23,6 +23,12 @@ const postCtrl = {
   },
   getAllPost: async (req, res) => {
     const { user } = req.body;
+    let { page, limit } = req.query;
+
+    if (!page) page = 1;
+    if (!limit) limit = 10;
+
+    const skip = (page - 1) * 10;
     try {
       //
       //Finding the user by id so we can get what users he is following
@@ -37,9 +43,11 @@ const postCtrl = {
             select: "username fullname picture",
           },
           options: { sort: { createdAt: -1 } },
-        });
+        })
+        .skip(skip)
+        .limit(limit);
 
-      res.json({ msg: "Success", result: posts.length, posts });
+      res.json({ page: page, limit: limit, result: posts.length, posts });
     } catch (err) {
       return res.status(500).json({ mssg: err.message });
     }
@@ -53,7 +61,6 @@ const postCtrl = {
       const posts = await Posts.find({
         user: req.params.id,
       })
-
         .populate("user likes", "username fullname picture")
         .populate({
           path: "comments",

@@ -2,7 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
   disoverPost: null,
-  indexV: null,
+  noPost: false,
 };
 
 export const discoverpostSlice = createSlice({
@@ -12,9 +12,23 @@ export const discoverpostSlice = createSlice({
     discoverPost: (state, action) => {
       state.disoverPost = action.payload;
     },
+    adddiscoverPost: (state, action) => {
+      state.disoverPost = [...state.disoverPost, ...action.payload];
+    },
+    noMoreadddiscoverPost: (state, action) => {
+      state.noPost = true;
+    },
+    paginationTrue: (state, action) => {
+      state.noPost = false;
+    },
   },
 });
 
-export const { discoverPost } = discoverpostSlice.actions;
+export const {
+  discoverPost,
+  adddiscoverPost,
+  noMoreadddiscoverPost,
+  paginationTrue,
+} = discoverpostSlice.actions;
 
 export default discoverpostSlice.reducer;

@@ -186,9 +186,8 @@ const Profile = () => {
         <hr />
         <div className="row">
           <MainHeading title="POST" classNames=" my-3" />
-          <div className=" col-md-6 col-xl-4">
-            <Posts user={user} onlyUserPost={true} />
-          </div>
+
+          <Posts user={user} onlyUserPost={true} />
         </div>
       </div>
       {/* <div className="container mt-4">
