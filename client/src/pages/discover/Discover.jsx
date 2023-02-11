@@ -1,25 +1,25 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { UNSECURED } from "../../constant/Util";
-import { paginationTrue } from "../../redux/discoverPostsSlice";
+import {
+  DpaginationTrue,
+  moreDiscoverPage,
+} from "../../redux/discoverPostsSlice";
 import Posts from "../home/post/Posts";
 import { useHomeFunctanility } from "../home/useHomeApi";
 import { Scroll } from "../sharedComponents/infiniteScrollLoaders/Scroll";
 
 const Discover = () => {
   const [hasMore, sethasMore] = useState(true);
-  const userData = useSelector((state) => state.auth.userData);
   const allPosts = useSelector((state) => state.discoverPost.disoverPost);
-  const user = UNSECURED(userData).user;
-  const [moreAllPostPge, setMoreAllPostPage] = useState(2);
   const moreAllPost = true;
-  const { getAllPosts } = useHomeFunctanility(moreAllPost, moreAllPostPge);
+  const { getAllPosts } = useHomeFunctanility(moreAllPost);
   const noMorePosts = useSelector((state) => state.discoverPost.noPost);
+  // console.log(allPosts);
 
   const fetchMoredata = () => {
     setTimeout(() => {
       getAllPosts();
-      setMoreAllPostPage(moreAllPostPge + 1);
+      dispatch({ type: moreDiscoverPage });
     }, 500);
   };
 
@@ -30,17 +30,19 @@ const Discover = () => {
     //
     //After page change we again have to fetch data
     //
-    return () => dispatch({ type: paginationTrue });
+    return () => dispatch({ type: DpaginationTrue });
   }, [noMorePosts]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  return (
+  return allPosts ? (
     <Scroll fetchMoredata={fetchMoredata} hasMore={hasMore} data={allPosts}>
       <div className="container mt-4">
         <div className="row">
-          <Posts user={user} discover={true} />
+          <Posts discover={true} />
         </div>
       </div>
     </Scroll>
+  ) : (
+    <Posts discover={true} />
   );
 };
 

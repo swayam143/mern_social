@@ -3,6 +3,7 @@ import { createSlice } from "@reduxjs/toolkit";
 const initialState = {
   disoverPost: null,
   noPost: false,
+  moreDiscoverPage: 2,
 };
 
 export const discoverpostSlice = createSlice({
@@ -17,9 +18,13 @@ export const discoverpostSlice = createSlice({
     },
     noMoreadddiscoverPost: (state, action) => {
       state.noPost = true;
+      state.moreDiscoverPage = state.moreDiscoverPage - 1;
     },
-    paginationTrue: (state, action) => {
+    DpaginationTrue: (state, action) => {
       state.noPost = false;
+    },
+    moreDiscoverPage: (state, action) => {
+      state.moreDiscoverPage = state.moreDiscoverPage + 1;
     },
   },
 });
@@ -28,7 +33,9 @@ export const {
   discoverPost,
   adddiscoverPost,
   noMoreadddiscoverPost,
-  paginationTrue,
+  DpaginationTrue,
+  nullDiscoverPost,
+  moreDiscoverPage,
 } = discoverpostSlice.actions;
 
 export default discoverpostSlice.reducer;

@@ -23,25 +23,48 @@ import FollowingModal from "./FollowingModal";
 import { UsersProfile } from "../sharedComponents/avatar/UserProfile";
 import Posts from "../home/post/Posts";
 import { useHomeFunctanility } from "../home/useHomeApi";
+import { Scroll } from "../sharedComponents/infiniteScrollLoaders/Scroll";
+import { moreUserPage, UpaginationTrue } from "../../redux/userPostSlice";
 
 const Profile = () => {
   const [open, setOpen] = useState(false);
+  const [hasMore, sethasMore] = useState(true);
   const [modal, setModal] = useState(false);
   const [follow, setFollow] = useState(false);
   const userData = useSelector((state) => state.auth.userData);
   const [loading, setLoading] = useState(false);
   const [followermodal, setFollowerModal] = useState(false);
   const [followingmodal, setFollowingModal] = useState(false);
+  const allPosts = useSelector((state) => state.userPost.allPosts);
+  const noMorePosts = useSelector((state) => state.userPost.noUserPost);
+  const moreUserPost = true;
   const { getUserPosts } = useHomeFunctanility();
-
-  const { id } = useParams();
+  console.log(noMorePosts);
 
   const dispatch = useDispatch();
+
+  const fetchMoredata = () => {
+    setTimeout(() => {
+      getUserPosts(id, moreUserPost);
+      dispatch({ type: moreUserPage });
+    }, 500);
+  };
+
+  useEffect(() => {
+    noMorePosts === true && sethasMore(false);
+    //
+    //After page change we again have to fetch data
+    //
+    return () => dispatch({ type: UpaginationTrue });
+  }, [noMorePosts]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  const { id } = useParams();
 
   const [user, setUser] = useState(null);
 
   useEffect(() => {
     if (id !== null && id !== null) {
+      sethasMore(true);
       getUserPosts(id);
     }
   }, [id]); // eslint-disable-line react-hooks/exhaustive-deps
@@ -187,85 +210,25 @@ const Profile = () => {
         <div className="row">
           <MainHeading title="POST" classNames=" my-3" />
 
-          <Posts user={user} onlyUserPost={true} />
+          {allPosts ? (
+            <Scroll
+              fetchMoredata={fetchMoredata}
+              hasMore={hasMore}
+              data={allPosts}
+            >
+              <div className="container mt-4">
+                <div className="row">
+                  <Posts onlyUserPost={true} />
+                </div>
+              </div>
+            </Scroll>
+          ) : (
+            <Posts onlyUserPost={true} />
+          )}
+
+          {/* <Posts user={user} onlyUserPost={true} /> */}
         </div>
       </div>
-      {/* <div className="container mt-4">
-        <div className="row">
-          <div className="col-sm-6 col-lg-3 mb-3">
-            {" "}
-            <div className=" user_img_profile">
-              <UsersProfile
-                data={user}
-                className="user_img"
-                avtr_classaName="user_img fs_80"
-              />
-            </div>
-            {loading === true ? (
-              <CircularProgress color="secondary" />
-            ) : (
-              UNSECURED(userData).user._id !== id &&
-              (follow === true ? (
-                <PrimaryButton
-                  onClick={unfollowUser}
-                  classNames=" mt-2 w-100"
-                  title="Following"
-                  sx={{
-                    color: "#000 !important",
-                  }}
-                />
-              ) : (
-                <SecondaryButton
-                  title="Follow"
-                  classNames="mx-auto mt-4 "
-                  onClick={followUser}
-                />
-              ))
-            )}
-            {UNSECURED(userData).user._id === id && (
-              <SecondaryButton
-                title="Edit Profile"
-                classNames="mx-auto mt-4 "
-                onClick={() => setModal(true)}
-              />
-            )}
-          </div>{" "}
-          <div className="col-sm-6 col-lg-9">
-            <div>
-              <div className="bx_sh profile_txt">
-                <MainHeading title={user?.fullname.toUpperCase()} />
-              </div>
-              <br />
-              <div className="bx_sh profile_txt mt-3">
-                <p className="fs_18 ">@{user?.username}</p>
-              </div>
-              <br />
-              <div className="bx_sh profile_txt mt-3">
-                <p className="fs_14">{user?.email}</p>
-              </div>
-            </div>
-            <div
-              style={{ gap: "15px" }}
-              className="d-flex align-items-center flex-wrap mt-3"
-            >
-              <div className="follower_cont">
-                <Text1
-                  onClick={() => setFollowerModal(true)}
-                  classNames="pointer"
-                  title={`${user?.followers?.length} Followers`}
-                />{" "}
-              </div>{" "}
-              <div className="follower_cont">
-                <Text1
-                  onClick={() => setFollowingModal(true)}
-                  classNames="pointer"
-                  title={`${user?.following?.length} Following`}
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-      </div> */}
 
       <FullPageLoader open={open} setOpen={setOpen} />
       <EditModal modal={modal} setModal={setModal} user={user} />

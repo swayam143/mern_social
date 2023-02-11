@@ -3,6 +3,8 @@ import { createSlice } from "@reduxjs/toolkit";
 const initialState = {
   allPosts: null,
   indexV: null,
+  morehomePages: 2,
+  noHomePost: false,
 };
 
 export const postSlice = createSlice({
@@ -11,22 +13,33 @@ export const postSlice = createSlice({
   reducers: {
     getAllPost: (state, action) => {
       state.allPosts = action.payload;
-      // const newPost = [...action.payload];
-      // const checkedArray = newPost.map((x, i) => {
-      //   x.comments[i] = {
-      //     ...x.comments[i],
-      //     reply: [],
-      //   };
-      //   return x;
-      // });
-      // state.allPosts = checkedArray;
     },
     addNewPost: (state, action) => {
       state.allPosts = [...state.allPosts, action.payload];
     },
+    moreHomePage: (state, action) => {
+      state.morehomePages = state.morehomePages + 1;
+    },
+    noMoreaddHomePost: (state, action) => {
+      state.noHomePost = true;
+      state.morehomePages = state.morehomePages - 1;
+    },
+    addHomePost: (state, action) => {
+      state.allPosts = [...state.allPosts, ...action.payload];
+    },
+    HpaginationTrue: (state, action) => {
+      state.noHomePost = false;
+    },
   },
 });
 
-export const { getAllPost, addNewPost } = postSlice.actions;
+export const {
+  getAllPost,
+  addNewPost,
+  moreHomePage,
+  noMoreaddHomePost,
+  addHomePost,
+  HpaginationTrue,
+} = postSlice.actions;
 
 export default postSlice.reducer;

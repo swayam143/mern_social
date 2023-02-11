@@ -20,8 +20,11 @@ import { useNavigate } from "react-router-dom";
 import Comments from "../../sharedComponents/comments/Comments";
 import { usePostFunctanilty } from "../../apis/usePostCustom";
 import { PostUserProfile } from "../../sharedComponents/avatar/UserProfile";
+import { UNSECURED } from "../../../constant/Util";
 
-const Posts = ({ user, discover, onlyUserPost }) => {
+const Posts = ({ discover, onlyUserPost }) => {
+  const userData = useSelector((state) => state.auth.userData);
+  const user = UNSECURED(userData).user;
   const { getPosts, getAllPosts } = useHomeFunctanility();
   const [drop, setDrop] = useState("");
   const [edit, setEdit] = useState(false);
@@ -29,7 +32,15 @@ const Posts = ({ user, discover, onlyUserPost }) => {
   const [content, setContent] = useState("");
   const [moreComm, setMoreComm] = useState(false);
   const [contentVal, setContentVal] = useState("");
-  const [posts, setPosts] = useState(null);
+  const [posts, setPosts] = useState(
+    useSelector((state) =>
+      discover === true
+        ? state.discoverPost.disoverPost
+        : onlyUserPost === true
+        ? state.userPost.allPosts
+        : state.post.allPosts
+    )
+  );
   const allPosts = useSelector((state) =>
     discover === true
       ? state.discoverPost.disoverPost
@@ -38,7 +49,7 @@ const Posts = ({ user, discover, onlyUserPost }) => {
       : state.post.allPosts
   );
 
-  // console.log(useSelector((state) => state.userPost.allPosts));
+  // console.log(posts);
 
   const updatedPosts = useSelector((state) => state.updatedPost.updatedPosts);
   const deletePosts = useSelector((state) => state.updatedPost.deletePosts);
@@ -60,22 +71,22 @@ const Posts = ({ user, discover, onlyUserPost }) => {
     setPosts(newPost);
   }, [allPosts, updatedPosts]);
 
-  // console.log(typeof discover === "undefined");
-
   const { handleEditPost, HandleLike, handleComment, deletePost } =
     usePostFunctanilty(setDrop, setEdit, setPostData, content, setContent);
 
   useEffect(() => {
     typeof discover === "undefined" &&
       typeof onlyUserPost === "undefined" &&
+      allPosts === null &&
       getPosts(user);
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
-    discover === true && getAllPosts();
+    discover === true && allPosts === null && getAllPosts();
   }, [discover]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const navigate = useNavigate();
+  // console.log(user);
 
   return posts && typeof posts === "object" ? (
     posts.length === 0 ? (
@@ -113,9 +124,8 @@ const Posts = ({ user, discover, onlyUserPost }) => {
                       <div>
                         <Heading1
                           title={
-                            data &&
-                            (data?.user?._id === user?._id ||
-                              data?.user === user._id)
+                            data?.user?._id === user?._id ||
+                            data?.user === user._id
                               ? user?.fullname
                               : data?.user?.fullname
                           }
@@ -227,7 +237,7 @@ const Posts = ({ user, discover, onlyUserPost }) => {
                     placeholder="Comment"
                   />
                   <ThirdButton
-                    title="Post"
+                    title="Reply"
                     type="submit"
                     onClick={() => handleComment(data)}
                   />
@@ -252,3 +262,5 @@ const Posts = ({ user, discover, onlyUserPost }) => {
 };
 
 export default Posts;
+
+// "images/

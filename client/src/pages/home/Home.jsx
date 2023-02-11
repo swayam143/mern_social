@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { useSelector } from "react-redux";
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { UNSECURED } from "../../constant/Util";
 
 import { TextFields2 } from "../../components/textField/Textfields";
@@ -8,12 +8,35 @@ import "./Home.css";
 import Posts from "./post/Posts";
 import PostModal from "./post/PostModal";
 import { UserProfile } from "../sharedComponents/avatar/UserProfile";
+import { Scroll } from "../sharedComponents/infiniteScrollLoaders/Scroll";
+import { useHomeFunctanility } from "./useHomeApi";
+import { HpaginationTrue, moreHomePage } from "../../redux/postSlice";
 
 const Home = () => {
+  const [hasMore, sethasMore] = useState(true);
   const userData = useSelector((state) => state.auth.userData);
 
+  const { getPosts } = useHomeFunctanility();
   const [open, setOpen] = useState(false);
   const user = UNSECURED(userData).user;
+  const dispatch = useDispatch();
+  const allPosts = useSelector((state) => state.post.allPosts);
+  const moreHomePost = true;
+  const noMorePosts = useSelector((state) => state.post.noHomePost);
+
+  // console.log(noMorePosts);
+
+  useEffect(() => {
+    noMorePosts === true && sethasMore(false);
+    return () => dispatch({ type: HpaginationTrue });
+  }, [noMorePosts]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  const fetchMoredata = () => {
+    setTimeout(() => {
+      getPosts(user, moreHomePost);
+      dispatch({ type: moreHomePage });
+    }, 500);
+  };
 
   return (
     <>
@@ -35,9 +58,24 @@ const Home = () => {
             </div>
           </div>
         </div>
+
         <div className="row mt-4">
           <div className="col-sm-8 col-lg-6">
-            <Posts user={user} />
+            {allPosts ? (
+              <Scroll
+                fetchMoredata={fetchMoredata}
+                hasMore={hasMore}
+                data={allPosts}
+              >
+                <div className="container mt-4">
+                  <div className="row">
+                    <Posts />
+                  </div>
+                </div>
+              </Scroll>
+            ) : (
+              <Posts />
+            )}
           </div>
         </div>
         <PostModal open={open} setOpen={setOpen} user={user} />

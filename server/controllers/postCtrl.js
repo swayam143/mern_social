@@ -5,7 +5,7 @@ const postCtrl = {
   createPost: async (req, res) => {
     try {
       const { content, user } = req.body;
-      console.log(req.body);
+      // console.log(req.body);
 
       const newPost = new Posts({
         content,
@@ -54,6 +54,12 @@ const postCtrl = {
   },
   userPost: async (req, res) => {
     const { user } = req.body;
+    let { page, limit } = req.query;
+
+    if (!page) page = 1;
+    if (!limit) limit = 10;
+
+    const skip = (page - 1) * 10;
     try {
       //
       //Finding the user by id so we can get what users he is following
@@ -69,7 +75,9 @@ const postCtrl = {
             select: "username fullname picture",
           },
           options: { sort: { createdAt: -1 } },
-        });
+        })
+        .skip(skip)
+        .limit(limit);
 
       res.json({ msg: "Success", result: posts.length, posts });
     } catch (err) {
@@ -78,11 +86,17 @@ const postCtrl = {
   },
   getPosts: async (req, res) => {
     const { user } = req.body;
+    let { page, limit } = req.query;
+
+    if (!page) page = 1;
+    if (!limit) limit = 10;
+
+    const skip = (page - 1) * 10;
     try {
       //
       //Finding the user by id so we can get what users he is following
       //
-      const users = await Users.findOne({ _id: req.params.id });
+      const users = await Users.findById(req.params.id);
       const posts = await Posts.find({
         user: [...users.following, req.params.id],
       })
@@ -94,7 +108,9 @@ const postCtrl = {
             select: "username fullname picture",
           },
           options: { sort: { createdAt: -1 } },
-        });
+        })
+        .skip(skip)
+        .limit(limit);
 
       res.json({ msg: "Success", result: posts.length, posts });
     } catch (err) {

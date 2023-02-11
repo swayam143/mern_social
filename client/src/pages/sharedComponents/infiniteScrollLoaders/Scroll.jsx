@@ -10,17 +10,28 @@ export const NoMoreData = () => {
   );
 };
 
-export const Loading = () => {
-  return <MainHeading classNames=" text-center my-5" title="Loading..." />;
+export const Loading = (data) => {
+  return (
+    <MainHeading
+      classNames=" text-center my-5"
+      title={` ${data?.data?.length >= 10 ? "Loading..." : ""}`}
+    />
+  );
 };
 
-export const Scroll = ({ fetchMoredata, hasMore, data, children }) => {
+export const Scroll = ({
+  fetchMoredata,
+  hasMore,
+  data,
+  children,
+  noMorePosts,
+}) => {
   return (
     <InfiniteScroll
       dataLength={data?.length || 0}
       next={fetchMoredata}
       hasMore={hasMore}
-      loader={<Loading />}
+      loader={<Loading data={data} />}
       // endMessage={<NoMoreData />}
     >
       {children}
