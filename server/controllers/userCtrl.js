@@ -153,22 +153,22 @@ const userCtrl = {
       const users = await Users.aggregate([
         { $match: { _id: { $nin: newArr } } },
         { $sample: { size: num } },
-        {
-          $lookup: {
-            from: "users",
-            localField: "followers",
-            foreignField: "_id",
-            as: "followers",
-          },
-        },
-        {
-          $lookup: {
-            from: "users",
-            localField: "following",
-            foreignField: "_id",
-            as: "following",
-          },
-        },
+        // {
+        //   $lookup: {
+        //     from: "users",
+        //     localField: "followers",
+        //     foreignField: "_id",
+        //     as: "followers",
+        //   },
+        // },
+        // {
+        //   $lookup: {
+        //     from: "users",
+        //     localField: "following",
+        //     foreignField: "_id",
+        //     as: "following",
+        //   },
+        // },
       ]).project("-password");
 
       return res.json({ users, result: users.length });
