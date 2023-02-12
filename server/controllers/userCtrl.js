@@ -141,6 +141,41 @@ const userCtrl = {
       return res.status(500).json({ mssg: err.message });
     }
   },
+  suggestions: async (req, res) => {
+    const { userId } = req.body;
+    try {
+      const FindUser = await Users.findById(userId);
+      if (!FindUser) return res.json({ mssg: "No User Found" });
+      const newArr = [...FindUser.following, FindUser._id];
+
+      const num = req.query.num || 10;
+
+      const users = await Users.aggregate([
+        { $match: { _id: { $nin: newArr } } },
+        { $sample: { size: num } },
+        {
+          $lookup: {
+            from: "users",
+            localField: "followers",
+            foreignField: "_id",
+            as: "followers",
+          },
+        },
+        {
+          $lookup: {
+            from: "users",
+            localField: "following",
+            foreignField: "_id",
+            as: "following",
+          },
+        },
+      ]).project("-password");
+
+      return res.json({ users, result: users.length });
+    } catch (err) {
+      return res.status(500).json({ mssg: err.message });
+    }
+  },
 };
 
 module.exports = userCtrl;

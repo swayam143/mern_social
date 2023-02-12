@@ -19,20 +19,14 @@ export const Loading = (data) => {
   );
 };
 
-export const Scroll = ({
-  fetchMoredata,
-  hasMore,
-  data,
-  children,
-  noMorePosts,
-}) => {
+export const Scroll = ({ fetchMoredata, hasMore, data, children }) => {
   return (
     <InfiniteScroll
       dataLength={data?.length || 0}
       next={fetchMoredata}
       hasMore={hasMore}
       loader={<Loading data={data} />}
-      // endMessage={<NoMoreData />}
+      endMessage={<NoMoreData />}
     >
       {children}
     </InfiniteScroll>
