@@ -112,7 +112,7 @@ const postCtrl = {
         .skip(skip)
         .limit(limit);
 
-      res.json({ msg: "Success", result: posts.length, posts });
+      res.json({ msg: "Successs", result: posts.length, posts });
     } catch (err) {
       return res.status(500).json({ mssg: err.message });
     }
