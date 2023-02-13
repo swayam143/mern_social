@@ -12,6 +12,7 @@ const SearchCard = ({ data, onClick }) => {
       <UsersProfile
         data={data}
         onClick={onClick}
+        noZoom
         imgSize={{ width: "40px", height: "40px", borderRadius: "50%" }}
       />
       <div onClick={onClick}>

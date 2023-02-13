@@ -99,7 +99,7 @@ const Posts = ({ discover, onlyUserPost }) => {
               key={i}
               className={`${
                 (onlyUserPost === true || discover === true) &&
-                " col-md-6 col-xl-4"
+                " col-md-6 col-xl-4 "
               }`}
             >
               <div className="card_post" key={i}>

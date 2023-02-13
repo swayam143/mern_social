@@ -39,7 +39,7 @@ const Profile = () => {
   const noMorePosts = useSelector((state) => state.userPost.noUserPost);
   const moreUserPost = true;
   const { getUserPosts } = useHomeFunctanility();
-  console.log(noMorePosts);
+  // console.log(noMorePosts);
 
   const dispatch = useDispatch();
 
@@ -216,7 +216,7 @@ const Profile = () => {
               hasMore={hasMore}
               data={allPosts}
             >
-              <div className="container mt-4">
+              <div className="container mt-4 p-0">
                 <div className="row">
                   <Posts onlyUserPost={true} />
                 </div>

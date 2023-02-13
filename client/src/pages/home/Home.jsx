@@ -11,6 +11,7 @@ import { UserProfile } from "../sharedComponents/avatar/UserProfile";
 import { Scroll } from "../sharedComponents/infiniteScrollLoaders/Scroll";
 import { useHomeFunctanility } from "./useHomeApi";
 import { HpaginationTrue, moreHomePage } from "../../redux/postSlice";
+import Suggestions from "./suggestions/Suggestions";
 
 const Home = () => {
   const [hasMore, sethasMore] = useState(true);
@@ -59,8 +60,8 @@ const Home = () => {
           </div>
         </div>
 
-        <div className="row mt-4">
-          <div className="col-sm-8 col-lg-6">
+        <div className="row ">
+          <div className="col-sm-8 col-lg-6 p-0">
             {allPosts ? (
               <Scroll
                 fetchMoredata={fetchMoredata}
@@ -76,6 +77,9 @@ const Home = () => {
             ) : (
               <Posts />
             )}
+          </div>{" "}
+          <div className="col-sm-4 col-lg-6 mt-4">
+            <Suggestions user={user} />
           </div>
         </div>
         <PostModal open={open} setOpen={setOpen} user={user} />

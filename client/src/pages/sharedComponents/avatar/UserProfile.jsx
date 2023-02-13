@@ -24,20 +24,30 @@ export const UserProfile = ({ imgSize }) => {
 
 export const UsersProfile = ({
   data,
+  noZoom,
   imgSize,
   onClick,
   className,
   avtr_classaName,
 }) => {
   return data && data.picture !== "" ? (
-    <Zoom style={{ display: "inline-block" }}>
+    noZoom ? (
       <img
         style={imgSize}
         className={className}
         src={`${Img_url}${data?.picture}`}
         alt="users"
-      />{" "}
-    </Zoom>
+      />
+    ) : (
+      <Zoom style={{ display: "inline-block" }}>
+        <img
+          style={imgSize}
+          className={className}
+          src={`${Img_url}${data?.picture}`}
+          alt="users"
+        />{" "}
+      </Zoom>
+    )
   ) : (
     <Avatar
       className={avtr_classaName}
