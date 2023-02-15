@@ -1,6 +1,7 @@
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { Base_url } from "../../constant";
+import { UNSECURED } from "../../constant/Util";
 import {
   adddiscoverPost,
   discoverPost,
@@ -18,6 +19,8 @@ import {
 } from "../../redux/userPostSlice";
 
 export const useHomeFunctanility = (moreAllPost) => {
+  const userData = useSelector((state) => state.auth.userData);
+  const user = UNSECURED(userData).user;
   const moreDiscoverPage = useSelector(
     (state) => state.discoverPost.moreDiscoverPage
   );
@@ -47,9 +50,11 @@ export const useHomeFunctanility = (moreAllPost) => {
   };
 
   const getAllPosts = async () => {
+    // console.log(user);
     if (moreAllPost === true) {
-      const response = await axios.get(
-        `${Base_url}posts?page=${moreDiscoverPage}&limit=10`
+      const response = await axios.post(
+        `${Base_url}discoverposts?page=${moreDiscoverPage}&limit=10`,
+        { user: user._id }
       );
       if (response.status === 200) {
         if (response.data.posts.length === 0) {
@@ -59,7 +64,9 @@ export const useHomeFunctanility = (moreAllPost) => {
         }
       }
     } else {
-      const response = await axios.get(`${Base_url}posts`);
+      const response = await axios.post(`${Base_url}discoverposts`, {
+        user: user._id,
+      });
       if (response.status === 200) {
         dispatch({ type: discoverPost, payload: response.data.posts });
       }

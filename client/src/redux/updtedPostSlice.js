@@ -5,6 +5,7 @@ import { Base_url } from "../constant";
 const initialState = {
   updatedPosts: [],
   deletePosts: null,
+  savedPost: [],
 };
 
 export const updatedSlice = createSlice({
@@ -73,6 +74,7 @@ export const updatedSlice = createSlice({
 
       state.updatedPosts = newPost;
     },
+
     deleteUpdatedComments: (state, action) => {
       const { post } = action.payload;
       let newPost = [...state.updatedPosts];
@@ -108,7 +110,7 @@ export const updatedSlice = createSlice({
 
       newPost[againfindpostIndex] = {
         ...newPost[againfindpostIndex],
-        comments: [...newPost[againfindpostIndex].comments, newComment],
+        comments: [newComment, ...newPost[againfindpostIndex].comments],
       };
 
       state.updatedPosts = newPost;

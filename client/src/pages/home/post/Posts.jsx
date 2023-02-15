@@ -1,6 +1,6 @@
 import { IconButton } from "@mui/material";
 import React, { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { FullPageLoader } from "../../../components/loader/Loaders";
 import { Img_url } from "../../../constant";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
@@ -21,6 +21,7 @@ import Comments from "../../sharedComponents/comments/Comments";
 import { usePostFunctanilty } from "../../apis/usePostCustom";
 import { PostUserProfile } from "../../sharedComponents/avatar/UserProfile";
 import { UNSECURED } from "../../../constant/Util";
+import { savedPosts } from "../../../redux/authSlice";
 
 const Posts = ({ discover, onlyUserPost }) => {
   const userData = useSelector((state) => state.auth.userData);
@@ -49,10 +50,11 @@ const Posts = ({ discover, onlyUserPost }) => {
       : state.post.allPosts
   );
 
-  // console.log(posts);
+  // console.log(user);
 
   const updatedPosts = useSelector((state) => state.updatedPost.updatedPosts);
   const deletePosts = useSelector((state) => state.updatedPost.deletePosts);
+  // console.log(updatedPosts);
 
   useEffect(() => {
     if (deletePosts !== null) {
@@ -86,7 +88,12 @@ const Posts = ({ discover, onlyUserPost }) => {
   }, [discover]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const navigate = useNavigate();
-  // console.log(user);
+  const dispatch = useDispatch();
+  console.log(user);
+
+  const savedPost = (data) => {
+    dispatch({ type: savedPosts, payload: data });
+  };
 
   return posts && typeof posts === "object" ? (
     posts.length === 0 ? (
@@ -208,7 +215,7 @@ const Posts = ({ discover, onlyUserPost }) => {
                     </div>
                   </div>
                   <div className="saved_btn_div">
-                    <div className="icon_div">
+                    <div onClick={() => savedPost(data)} className="icon_div">
                       <BookmarkBorderIcon />
                     </div>
                   </div>

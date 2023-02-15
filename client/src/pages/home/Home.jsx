@@ -16,7 +16,6 @@ import Suggestions from "./suggestions/Suggestions";
 const Home = () => {
   const [hasMore, sethasMore] = useState(true);
   const userData = useSelector((state) => state.auth.userData);
-
   const { getPosts } = useHomeFunctanility();
   const [open, setOpen] = useState(false);
   const user = UNSECURED(userData).user;
@@ -25,7 +24,7 @@ const Home = () => {
   const moreHomePost = true;
   const noMorePosts = useSelector((state) => state.post.noHomePost);
 
-  // console.log(noMorePosts);
+  // console.log(UNSECURED(userData));
 
   useEffect(() => {
     noMorePosts === true && sethasMore(false);

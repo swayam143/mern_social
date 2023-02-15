@@ -33,8 +33,13 @@ const postCtrl = {
       //
       //Finding the user by id so we can get what users he is following
       //
-      const users = await Users.findOne({ _id: req.params.id });
-      const posts = await Posts.find()
+
+      // db.posts.find({ user: { $nin: [ "63e343525702a9d474ce3f1e", "63e343525702a9d474ce3d1e" ] } })
+
+      const users = await Users.findById(user);
+      const newArr = [...users.following, users._id];
+      // console.log(users);
+      const posts = await Posts.find({ user: { $nin: newArr } })
         .populate("user likes", "username fullname picture")
         .populate({
           path: "comments",

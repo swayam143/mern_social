@@ -17,7 +17,7 @@ import "./profile.css";
 import EditModal from "./EditModal";
 import { Base_url } from "../../constant";
 import axios from "axios";
-import { isLogin } from "../../redux/authSlice";
+import { followsUser } from "../../redux/authSlice";
 import FollowersModal from "./FollwersModal";
 import FollowingModal from "./FollowingModal";
 import { UsersProfile } from "../sharedComponents/avatar/UserProfile";
@@ -38,7 +38,7 @@ const Profile = () => {
   const allPosts = useSelector((state) => state.userPost.allPosts);
   const noMorePosts = useSelector((state) => state.userPost.noUserPost);
   const moreUserPost = true;
-  const { getUserPosts } = useHomeFunctanility();
+  const { getUserPosts, getAllPosts } = useHomeFunctanility();
   // console.log(noMorePosts);
 
   const dispatch = useDispatch();
@@ -114,21 +114,24 @@ const Profile = () => {
       userId: UNSECURED(userData).user._id,
     });
     if (response.status === 200) {
+      getAllPosts();
       setLoading(false);
-      dispatch({ type: isLogin, payload: response.data });
+      // dispatch({ type: isLogin, payload: response.data });
+      dispatch({ type: followsUser, payload: { data: user } });
       await Success(response.data.msg);
     }
     setLoading(false);
   };
 
   const unfollowUser = async () => {
+    getAllPosts();
     setLoading(true);
     const response = await axios.post(`${Base_url}user/${user._id}/unfollow`, {
       userId: UNSECURED(userData).user._id,
     });
     if (response.status === 200) {
       setLoading(false);
-      dispatch({ type: isLogin, payload: response.data });
+      dispatch({ type: followsUser, payload: { data: user } });
       await Error(response.data.msg);
     }
     setLoading(false);
@@ -152,10 +155,11 @@ const Profile = () => {
               (follow === true ? (
                 <PrimaryButton
                   onClick={unfollowUser}
-                  classNames=" mt-2 w-100"
+                  classNames=" w-100 "
                   title="Following"
                   sx={{
                     color: "#000 !important",
+                    margin: "20px auto 0px auto !important",
                   }}
                 />
               ) : (

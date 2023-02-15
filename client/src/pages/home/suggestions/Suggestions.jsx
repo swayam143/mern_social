@@ -10,13 +10,18 @@ import { Heading1 } from "../../../components/text/Texts";
 import { Error, Success } from "../../../components/toast/Toasts";
 import SearchCard from "../../../components/userSearchCard/SearchCard";
 import { Base_url } from "../../../constant";
-import { isLogin } from "../../../redux/authSlice";
+import { followsUser } from "../../../redux/authSlice";
 import "./Suggestions.css";
 import CachedIcon from "@mui/icons-material/Cached";
+import { useHomeFunctanility } from "../useHomeApi";
 
 const Suggestions = ({ user }) => {
   const navigate = useNavigate();
   const [suggest, setSuggest] = useState([]);
+
+  const { getPosts, getAllPosts } = useHomeFunctanility();
+
+  // console.log(user);
 
   useEffect(() => {
     if (user?._id) {
@@ -30,27 +35,36 @@ const Suggestions = ({ user }) => {
     const response = await axios.post(`${Base_url}user/suggestions`, {
       userId: user._id,
     });
+
     setSuggest(response.data.users);
   };
 
   const dispatch = useDispatch();
 
   const followUser = async (data) => {
+    // dispatch({ type: followsUser, payload: data });
     const response = await axios.post(`${Base_url}user/${data._id}/follow`, {
       userId: user._id,
     });
+
     if (response.status === 200) {
-      dispatch({ type: isLogin, payload: response.data });
+      getPosts(user);
+      getAllPosts();
+      dispatch({ type: followsUser, payload: data });
       await Success(response.data.msg);
     }
   };
 
   const unfollowUser = async (data) => {
+    // dispatch({ type: followsUser, payload: data });
     const response = await axios.post(`${Base_url}user/${data._id}/unfollow`, {
       userId: user._id,
     });
+    // dispatch({ type: followsUser, payload: data });
     if (response.status === 200) {
-      dispatch({ type: isLogin, payload: response.data });
+      getPosts(user);
+      getAllPosts();
+      dispatch({ type: followsUser, payload: data });
       await Error(response.data.msg);
     }
   };
