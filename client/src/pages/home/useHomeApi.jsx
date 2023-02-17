@@ -2,6 +2,7 @@ import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { Base_url } from "../../constant";
 import { UNSECURED } from "../../constant/Util";
+import { savedPosts } from "../../redux/authSlice";
 import {
   adddiscoverPost,
   discoverPost,
@@ -49,9 +50,8 @@ export const useHomeFunctanility = (moreAllPost) => {
     }
   };
 
-  const getAllPosts = async () => {
-    // console.log(user);
-    if (moreAllPost === true) {
+  const getAllPosts = async (morePage) => {
+    if (morePage === true) {
       const response = await axios.post(
         `${Base_url}discoverposts?page=${moreDiscoverPage}&limit=10`,
         { user: user._id }
@@ -95,5 +95,16 @@ export const useHomeFunctanility = (moreAllPost) => {
     }
   };
 
-  return { getPosts, getAllPosts, getUserPosts };
+  const savedPost = async (data) => {
+    // console.log(user._id);
+    const response = await axios.post(`${Base_url}savedPost`, {
+      postId: data._id,
+      userId: user._id,
+    });
+    if (response.status === 200) {
+      dispatch({ type: savedPosts, payload: data });
+    }
+  };
+
+  return { getPosts, getAllPosts, getUserPosts, savedPost };
 };

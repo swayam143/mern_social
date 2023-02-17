@@ -59,25 +59,6 @@ const authCtrl = {
           ...newUser._doc,
         },
       });
-
-      //   Result -->{
-      //     "msg": "Registered",
-      //     "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYzYzNkMDE4Y2Q1ZTNlZTk0Y2I0Yzg5YyIsImlhdCI6MTY3Mzc3NzE3NiwiZXhwIjoxNjczODYzNTc2fQ.6TrD50cMw-oykCvUvqSkCLdjHtP2ZbKM595Cz3jvOFg",
-      //     "user": {
-      //       "fullname": "Shubham Oswal",
-      //       "username": "shubham1",
-      //       "role": "user",
-      //       "gender": "male",
-      //       "mobile": "",
-      //       "address": "",
-      //       "story": "",
-      //       "website": "",
-      //       "followers": [],
-      //       "following": [],
-      //       "_id": "63c3d018cd5e3ee94cb4c89c",
-      //       "password": ""
-      //     }
-      //   }
     } catch (err) {
       return res.status(500).json({ msg: err.message });
     }
@@ -86,10 +67,24 @@ const authCtrl = {
     try {
       const { email, password } = req.body;
 
-      const user = await Users.findOne({ email }).populate(
-        "followers following",
-        "-password"
-      );
+      const user = await Users.findOne({ email })
+        .populate("followers following", "-password")
+        .populate({
+          path: "saved",
+          populate: [
+            {
+              path: "user likes",
+              select: "username fullname picture",
+            },
+            {
+              path: "comments",
+              populate: {
+                path: "user",
+                select: "username fullname picture",
+              },
+            },
+          ],
+        });
 
       if (!user)
         return res.status(400).json({ msg: "This Email doesnot Exist" });

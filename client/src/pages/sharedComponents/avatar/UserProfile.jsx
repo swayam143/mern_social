@@ -60,8 +60,10 @@ export const UsersProfile = ({
 };
 
 export const PostUserProfile = ({ data, user, imgSize }) => {
-  //   console.log(data?.user?.picture !== "");
-  return data && data?.user?.picture !== "" ? (
+  // console.log(data?.user?.picture);
+  return data &&
+    data?.user?.picture !== "" &&
+    typeof data?.user?.picture !== "undefined" ? (
     <Zoom>
       <img
         style={imgSize}

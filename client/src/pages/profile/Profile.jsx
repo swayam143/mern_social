@@ -1,5 +1,4 @@
 import { CircularProgress } from "@mui/material";
-
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
@@ -25,6 +24,40 @@ import Posts from "../home/post/Posts";
 import { useHomeFunctanility } from "../home/useHomeApi";
 import { Scroll } from "../sharedComponents/infiniteScrollLoaders/Scroll";
 import { moreUserPage, UpaginationTrue } from "../../redux/userPostSlice";
+import PropTypes from "prop-types";
+import Tabs from "@mui/material/Tabs";
+import Tab from "@mui/material/Tab";
+import Box from "@mui/material/Box";
+import SavedPost from "./SavedPost";
+
+function TabPanel(props) {
+  const { children, value, index, ...other } = props;
+
+  return (
+    <div
+      role="tabpanel"
+      hidden={value !== index}
+      id={`simple-tabpanel-${index}`}
+      aria-labelledby={`simple-tab-${index}`}
+      {...other}
+    >
+      {value === index && <Box sx={{ overflow: "hidden" }}>{children}</Box>}
+    </div>
+  );
+}
+
+TabPanel.propTypes = {
+  children: PropTypes.node,
+  index: PropTypes.number.isRequired,
+  value: PropTypes.number.isRequired,
+};
+
+function a11yProps(index) {
+  return {
+    id: `simple-tab-${index}`,
+    "aria-controls": `simple-tabpanel-${index}`,
+  };
+}
 
 const Profile = () => {
   const [open, setOpen] = useState(false);
@@ -39,7 +72,11 @@ const Profile = () => {
   const noMorePosts = useSelector((state) => state.userPost.noUserPost);
   const moreUserPost = true;
   const { getUserPosts, getAllPosts } = useHomeFunctanility();
-  // console.log(noMorePosts);
+  const [value, setValue] = React.useState(0);
+
+  const handleChange = (event, newValue) => {
+    setValue(newValue);
+  };
 
   const dispatch = useDispatch();
 
@@ -93,7 +130,7 @@ const Profile = () => {
     }
   }, [id, userData, open]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  // console.log(user);
+  // console.log(UNSECURED(userData).user._id);
 
   useEffect(() => {
     if (user && userData) {
@@ -135,6 +172,32 @@ const Profile = () => {
       await Error(response.data.msg);
     }
     setLoading(false);
+  };
+
+  const PostHtml = () => {
+    return (
+      <>
+        {allPosts ? (
+          <Scroll
+            fetchMoredata={fetchMoredata}
+            hasMore={hasMore}
+            data={allPosts}
+          >
+            <div className="container mt-4 p-0">
+              <div className="row">
+                <Posts
+                  onlyUserPost={true}
+                  post={allPosts}
+                  allPosts={allPosts}
+                />
+              </div>
+            </div>
+          </Scroll>
+        ) : (
+          <Posts onlyUserPost={true} post={allPosts} allPosts={allPosts} />
+        )}
+      </>
+    );
   };
 
   return (
@@ -211,27 +274,49 @@ const Profile = () => {
           </div>
         </div>
         <hr />
-        <div className="row">
-          <MainHeading title="POST" classNames=" my-3" />
-
-          {allPosts ? (
-            <Scroll
-              fetchMoredata={fetchMoredata}
-              hasMore={hasMore}
-              data={allPosts}
-            >
-              <div className="container mt-4 p-0">
-                <div className="row">
-                  <Posts onlyUserPost={true} />
+        <Box className="mt-3 tabs_custom" sx={{ width: "100%" }}>
+          {user?._id === UNSECURED(userData)?.user?._id ? (
+            <Box>
+              <Tabs
+                centered
+                value={value}
+                onChange={handleChange}
+                aria-label="basic tabs example"
+              >
+                <Tab
+                  sx={{
+                    "&.Mui-selected": {
+                      color: "var(--500) ",
+                    },
+                  }}
+                  label={<MainHeading title="Post" classNames="text_tr_none" />}
+                  {...a11yProps(0)}
+                />
+                <Tab
+                  sx={{
+                    "&.Mui-selected": {
+                      color: "var(--500) ",
+                    },
+                  }}
+                  label={
+                    <MainHeading title="Saved" classNames="text_tr_none" />
+                  }
+                  {...a11yProps(1)}
+                />
+              </Tabs>{" "}
+              <TabPanel value={value} index={0}>
+                <PostHtml />
+              </TabPanel>
+              <TabPanel value={value} index={1}>
+                <div className="row mt-4">
+                  <SavedPost />
                 </div>
-              </div>
-            </Scroll>
+              </TabPanel>
+            </Box>
           ) : (
-            <Posts onlyUserPost={true} />
+            <PostHtml />
           )}
-
-          {/* <Posts user={user} onlyUserPost={true} /> */}
-        </div>
+        </Box>
       </div>
 
       <FullPageLoader open={open} setOpen={setOpen} />

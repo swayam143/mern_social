@@ -119,3 +119,12 @@ h4 {
   position: relative;
   display: contents;
 }
+.MuiTabs-indicator {
+  background-color: var(--500) !important;
+}
+.text_tr_none {
+  text-transform: none;
+}
+.infinite-scroll-component {
+  overflow: hidden !important;
+}

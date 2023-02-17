@@ -11,14 +11,14 @@ import { Scroll } from "../sharedComponents/infiniteScrollLoaders/Scroll";
 const Discover = () => {
   const [hasMore, sethasMore] = useState(true);
   const allPosts = useSelector((state) => state.discoverPost.disoverPost);
-  const moreAllPost = true;
-  const { getAllPosts } = useHomeFunctanility(moreAllPost);
+  const morePage = true;
+  const { getAllPosts } = useHomeFunctanility();
   const noMorePosts = useSelector((state) => state.discoverPost.noPost);
   // console.log(allPosts);
 
   const fetchMoredata = () => {
     setTimeout(() => {
-      getAllPosts();
+      getAllPosts(morePage);
       dispatch({ type: moreDiscoverPage });
     }, 500);
   };
@@ -33,16 +33,20 @@ const Discover = () => {
     return () => dispatch({ type: DpaginationTrue });
   }, [noMorePosts]); // eslint-disable-line react-hooks/exhaustive-deps
 
+  useEffect(() => {
+    allPosts === null && getAllPosts();
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
   return allPosts ? (
     <Scroll fetchMoredata={fetchMoredata} hasMore={hasMore} data={allPosts}>
       <div className="container mt-4">
         <div className="row">
-          <Posts discover={true} />
+          <Posts discover={true} post={allPosts} allPosts={allPosts} />
         </div>
       </div>
     </Scroll>
   ) : (
-    <Posts discover={true} />
+    <Posts discover={true} post={allPosts} allPosts={allPosts} />
   );
 };
 

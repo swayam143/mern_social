@@ -1,6 +1,6 @@
 import { IconButton } from "@mui/material";
 import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { FullPageLoader } from "../../../components/loader/Loaders";
 import { Img_url } from "../../../constant";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
@@ -21,34 +21,36 @@ import Comments from "../../sharedComponents/comments/Comments";
 import { usePostFunctanilty } from "../../apis/usePostCustom";
 import { PostUserProfile } from "../../sharedComponents/avatar/UserProfile";
 import { UNSECURED } from "../../../constant/Util";
-import { savedPosts } from "../../../redux/authSlice";
+import BookmarkIcon from "@mui/icons-material/Bookmark";
 
-const Posts = ({ discover, onlyUserPost }) => {
+const Posts = ({ discover, onlyUserPost, allPosts, post, savedPosts }) => {
   const userData = useSelector((state) => state.auth.userData);
   const user = UNSECURED(userData).user;
-  const { getPosts, getAllPosts } = useHomeFunctanility();
+  const { savedPost } = useHomeFunctanility();
   const [drop, setDrop] = useState("");
   const [edit, setEdit] = useState(false);
   const [postData, setPostData] = useState(null);
   const [content, setContent] = useState("");
   const [moreComm, setMoreComm] = useState(false);
   const [contentVal, setContentVal] = useState("");
-  const [posts, setPosts] = useState(
-    useSelector((state) =>
-      discover === true
-        ? state.discoverPost.disoverPost
-        : onlyUserPost === true
-        ? state.userPost.allPosts
-        : state.post.allPosts
-    )
-  );
-  const allPosts = useSelector((state) =>
-    discover === true
-      ? state.discoverPost.disoverPost
-      : onlyUserPost === true
-      ? state.userPost.allPosts
-      : state.post.allPosts
-  );
+  const [posts, setPosts] = useState(post);
+
+  // const [posts, setPosts] = useState(
+  //   useSelector((state) =>
+  //     discover === true
+  //       ? state.discoverPost.disoverPost
+  //       : onlyUserPost === true
+  //       ? state.userPost.allPosts
+  //       : state.post.allPosts
+  //   )
+  // );
+  // const allPosts = useSelector((state) =>
+  //   discover === true
+  //     ? state.discoverPost.disoverPost
+  //     : onlyUserPost === true
+  //     ? state.userPost.allPosts
+  //     : state.post.allPosts
+  // );
 
   // console.log(user);
 
@@ -76,24 +78,18 @@ const Posts = ({ discover, onlyUserPost }) => {
   const { handleEditPost, HandleLike, handleComment, deletePost } =
     usePostFunctanilty(setDrop, setEdit, setPostData, content, setContent);
 
-  useEffect(() => {
-    typeof discover === "undefined" &&
-      typeof onlyUserPost === "undefined" &&
-      allPosts === null &&
-      getPosts(user);
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  // useEffect(() => {
+  //   typeof discover === "undefined" &&
+  //     typeof onlyUserPost === "undefined" &&
+  //     allPosts === null &&
+  //     getPosts(user);
+  // }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
-  useEffect(() => {
-    discover === true && allPosts === null && getAllPosts();
-  }, [discover]); // eslint-disable-line react-hooks/exhaustive-deps
+  // useEffect(() => {
+  //   discover === true && allPosts === null && getAllPosts();
+  // }, [discover]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const navigate = useNavigate();
-  const dispatch = useDispatch();
-  console.log(user);
-
-  const savedPost = (data) => {
-    dispatch({ type: savedPosts, payload: data });
-  };
 
   return posts && typeof posts === "object" ? (
     posts.length === 0 ? (
@@ -105,11 +101,13 @@ const Posts = ({ discover, onlyUserPost }) => {
             <div
               key={i}
               className={`${
-                (onlyUserPost === true || discover === true) &&
-                " col-md-6 col-xl-4 "
+                (onlyUserPost === true ||
+                  discover === true ||
+                  savedPosts === true) &&
+                "col-md-6 col-xl-4 "
               }`}
             >
-              <div className="card_post" key={i}>
+              <div className="card_post">
                 <div className="card_header">
                   <div
                     style={{ gap: "15px" }}
@@ -184,7 +182,7 @@ const Posts = ({ discover, onlyUserPost }) => {
                   />
 
                   <div className="icon_btn_div">
-                    {data.likes.find(
+                    {data?.likes?.find(
                       (item) =>
                         item._id === user._id ||
                         data.likes.find((item) => item === user._id)
@@ -216,7 +214,11 @@ const Posts = ({ discover, onlyUserPost }) => {
                   </div>
                   <div className="saved_btn_div">
                     <div onClick={() => savedPost(data)} className="icon_div">
-                      <BookmarkBorderIcon />
+                      {user.saved.find((item) => item._id === data._id) ? (
+                        <BookmarkIcon sx={{ color: "red" }} />
+                      ) : (
+                        <BookmarkBorderIcon />
+                      )}
                     </div>
                   </div>
                 </div>
@@ -224,11 +226,11 @@ const Posts = ({ discover, onlyUserPost }) => {
                   <div className="d-flex align-items-center justify-content-between pt-1 px-1">
                     <Text1
                       classNames="pointer"
-                      title={` ${data.likes.length} likes`}
+                      title={` ${data?.likes?.length} likes`}
                     />
                     <Text1
                       classNames="pointer"
-                      title={` ${data.comments.length} comments`}
+                      title={` ${data?.comments?.length} comments`}
                     />
                   </div>
                 </div>

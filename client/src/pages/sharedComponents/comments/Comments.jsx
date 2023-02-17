@@ -389,12 +389,7 @@ const Comments = ({ comments, moreComm, user, postId, post }) => {
               </div>
             </div>
           ))}
-      {/* <AllCommentModal
-        open={open}
-        setOpen={setOpen}
-        comments={comments}
-        user={user}
-      /> */}
+
       <EditCommentModal
         edit={edit}
         setEdit={setEdit}

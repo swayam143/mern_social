@@ -62,6 +62,7 @@ export const authSlice = createSlice({
         };
       }
       state.userData = SECURED(newUserData);
+      SetSession(StoredVariables.logindata, SECURED(newUserData));
     },
     logoutUser: (state) => {
       ClearSession();

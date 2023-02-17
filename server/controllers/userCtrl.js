@@ -19,7 +19,23 @@ const userCtrl = {
     try {
       const users = await Users.findById(req.params.id)
         .select("-password")
-        .populate("followers following", "-password");
+        .populate("followers following", "-password")
+        .populate({
+          path: "saved",
+          populate: [
+            {
+              path: "user likes",
+              select: "username fullname picture",
+            },
+            {
+              path: "comments",
+              populate: {
+                path: "user",
+                select: "username fullname picture",
+              },
+            },
+          ],
+        });
 
       if (!users) return res.status(400).json({ mssg: "User doesnot exist" });
       res.json({ users });
@@ -57,7 +73,23 @@ const userCtrl = {
         { new: true }
       )
         .select("-password")
-        .populate("followers following", "-password");
+        .populate("followers following", "-password")
+        .populate({
+          path: "saved",
+          populate: [
+            {
+              path: "user likes",
+              select: "username fullname picture",
+            },
+            {
+              path: "comments",
+              populate: {
+                path: "user",
+                select: "username fullname picture",
+              },
+            },
+          ],
+        });
 
       const access_token = jwt.sign(
         { id: users._id },
@@ -66,7 +98,6 @@ const userCtrl = {
 
       const { password, ...otherDetails } = updatedUser._doc;
 
-      // res.json({ msssg: "Update Success" });
       res.json({
         access_token,
         user: otherDetails,

@@ -38,6 +38,10 @@ const Home = () => {
     }, 500);
   };
 
+  useEffect(() => {
+    allPosts === null && getPosts(user);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
   return (
     <>
       <div className="container mt-4">
@@ -69,7 +73,7 @@ const Home = () => {
               >
                 <div className="container mt-4">
                   <div className="row">
-                    <Posts />
+                    <Posts post={allPosts} allPosts={allPosts} />
                   </div>
                 </div>
               </Scroll>
@@ -78,7 +82,7 @@ const Home = () => {
             )}
           </div>{" "}
           <div className="col-sm-4 col-lg-6 mt-4">
-            <Suggestions user={user} />
+            <Suggestions user={user} post={allPosts} allPosts={allPosts} />
           </div>
         </div>
         <PostModal open={open} setOpen={setOpen} user={user} />
