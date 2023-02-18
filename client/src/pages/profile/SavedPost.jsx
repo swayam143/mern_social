@@ -18,7 +18,7 @@ const SavedPost = () => {
       {post && typeof post === "object" ? (
         <>
           {post.length === 0 ? (
-            <h3>No data found</h3>
+            <h3>No Saved Post found</h3>
           ) : (
             <Posts post={post} allPosts={post} savedPosts={true} />
           )}

@@ -18,6 +18,8 @@ import { POST } from "../../constant/RequestAuthService";
 import { FullPageLoader } from "../../components/loader/Loaders";
 import * as Validator from "validatorjs";
 import { Error, Success, Validate } from "../../components/toast/Toasts";
+import { motion } from "framer-motion";
+import logo from "../../images/logo.png";
 
 const Register = () => {
   const [showPass, setShowPass] = useState(false);
@@ -74,140 +76,299 @@ const Register = () => {
     }
   };
   return (
-    <div className="full_body">
-      <form className="login_form mx-2" onSubmit={handleSubmit}>
-        <Heading1 title="Register" classNames="text-center" />
-
-        <TextFields1
-          type="text"
-          classNames="mt-4"
-          placeholder="Full Name"
-          name="fullname"
-          value={data.fullname}
-          onChange={handleChange}
-        />
-        <TextFields1
-          type="text"
-          classNames="mt-4"
-          placeholder="User Name"
-          name="username"
-          value={data.username}
-          onChange={handleChange}
-        />
-        <TextFields1
-          type="text"
-          classNames="mt-4"
-          placeholder="Email Address"
-          name="email"
-          value={data.email}
-          onChange={handleChange}
-        />
-
-        <div className="relative">
-          <TextFields1
-            type={showPass ? "text" : "password"}
-            classNames="mt-4"
-            placeholder="Password"
-            name="password"
-            value={data.password}
-            onChange={handleChange}
-          />
-          <IconButton
-            className="password_visible"
-            onClick={() => setShowPass(!showPass)}
-          >
-            {showPass ? <VisibilityOffIcon /> : <VisibilityIcon />}
-          </IconButton>
+    <>
+      <div class="container-fluid relative">
+        <div className="logo_abs">
+          <img src={logo} alt="Bootstrap" width="150" />
         </div>
-        <div className="relative">
-          <TextFields1
-            type={showPass2 ? "text" : "password"}
-            classNames="mt-4"
-            placeholder="Confrim Password"
-            name="cf_password"
-            value={data.cf_password}
-            onChange={handleChange}
-          />
-          <IconButton
-            className="password_visible"
-            onClick={() => setShowPass2(!showPass2)}
-          >
-            {showPass2 ? <VisibilityOffIcon /> : <VisibilityIcon />}
-          </IconButton>
-        </div>
-        <div className="d-flex justify-content-center mt-3 ">
-          {" "}
-          <FormControl>
-            <RadioGroup
-              row
-              // aria-labelledby="demo-row-radio-buttons-group-label"
-              // name="row-radio-buttons-group"
-              value={data.gender}
-              onChange={(e) => setData({ ...data, gender: e.target.value })}
-              // name="gender"
+        <div class="row">
+          <div class="col-md-6 col-sm-12 login-image reg_img"></div>
+          <div class="col-md-6 col-sm-12 login-form d-flex align-items-center justify-content-center below_767">
+            {" "}
+            <motion.form
+              initial={{ opacity: 0, scale: 0, y: -100 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              transition={{ duration: 0.2 }}
+              className="login_form mx-2"
+              onSubmit={handleSubmit}
             >
-              {" "}
-              <FormControlLabel
-                value="male"
-                control={
-                  <Radio
-                    sx={{
-                      color: `var(--700)`,
-                      "&.Mui-checked": {
-                        color: `var(--500)`,
-                      },
-                    }}
-                  />
-                }
-                label="Male"
-              />
-              <FormControlLabel
-                value="female"
-                control={
-                  <Radio
-                    sx={{
-                      color: `var(--700)`,
-                      "&.Mui-checked": {
-                        color: `var(--500)`,
-                      },
-                    }}
-                  />
-                }
-                label="Female"
-              />
-              <FormControlLabel
-                value="other"
-                control={
-                  <Radio
-                    sx={{
-                      color: `var(--700)`,
-                      "&.Mui-checked": {
-                        color: `var(--500)`,
-                      },
-                    }}
-                  />
-                }
-                label="Other"
-              />
-            </RadioGroup>
-          </FormControl>
-        </div>
-        <SecondaryButton
-          title="Register"
-          classNames="w-100 my-3"
-          type="submit"
-        />
-        <Text1 title="Already Have an Account" />
+              <Heading1 title="Register" classNames="text-center" />
 
-        <ThirdButton
-          title="Login"
-          classNames="w-100 my-3"
-          onClick={() => navigate("/login")}
-        />
-        {/* <Button onClick={() => setOpen(!open)}>show</Button> */}
-        <FullPageLoader open={open} setOpen={setOpen} />
-      </form>
-    </div>
+              <TextFields1
+                type="text"
+                classNames="mt-4"
+                placeholder="Full Name"
+                name="fullname"
+                value={data.fullname}
+                onChange={handleChange}
+              />
+              <TextFields1
+                type="text"
+                classNames="mt-4"
+                placeholder="User Name"
+                name="username"
+                value={data.username}
+                onChange={handleChange}
+              />
+              <TextFields1
+                type="text"
+                classNames="mt-4"
+                placeholder="Email Address"
+                name="email"
+                value={data.email}
+                onChange={handleChange}
+              />
+
+              <div className="relative">
+                <TextFields1
+                  type={showPass ? "text" : "password"}
+                  classNames="mt-4"
+                  placeholder="Password"
+                  name="password"
+                  value={data.password}
+                  onChange={handleChange}
+                />
+                <IconButton
+                  className="password_visible"
+                  onClick={() => setShowPass(!showPass)}
+                >
+                  {showPass ? <VisibilityOffIcon /> : <VisibilityIcon />}
+                </IconButton>
+              </div>
+              <div className="relative">
+                <TextFields1
+                  type={showPass2 ? "text" : "password"}
+                  classNames="mt-4"
+                  placeholder="Confrim Password"
+                  name="cf_password"
+                  value={data.cf_password}
+                  onChange={handleChange}
+                />
+                <IconButton
+                  className="password_visible"
+                  onClick={() => setShowPass2(!showPass2)}
+                >
+                  {showPass2 ? <VisibilityOffIcon /> : <VisibilityIcon />}
+                </IconButton>
+              </div>
+              <div className="d-flex justify-content-center mt-3 ">
+                {" "}
+                <FormControl>
+                  <RadioGroup
+                    row
+                    // aria-labelledby="demo-row-radio-buttons-group-label"
+                    // name="row-radio-buttons-group"
+                    value={data.gender}
+                    onChange={(e) =>
+                      setData({ ...data, gender: e.target.value })
+                    }
+                    // name="gender"
+                  >
+                    {" "}
+                    <FormControlLabel
+                      value="male"
+                      control={
+                        <Radio
+                          sx={{
+                            color: `var(--700)`,
+                            "&.Mui-checked": {
+                              color: `var(--500)`,
+                            },
+                          }}
+                        />
+                      }
+                      label="Male"
+                    />
+                    <FormControlLabel
+                      value="female"
+                      control={
+                        <Radio
+                          sx={{
+                            color: `var(--700)`,
+                            "&.Mui-checked": {
+                              color: `var(--500)`,
+                            },
+                          }}
+                        />
+                      }
+                      label="Female"
+                    />
+                    <FormControlLabel
+                      value="other"
+                      control={
+                        <Radio
+                          sx={{
+                            color: `var(--700)`,
+                            "&.Mui-checked": {
+                              color: `var(--500)`,
+                            },
+                          }}
+                        />
+                      }
+                      label="Other"
+                    />
+                  </RadioGroup>
+                </FormControl>
+              </div>
+              <SecondaryButton
+                title="Register"
+                classNames="w-100 my-3"
+                type="submit"
+              />
+              <Text1 title="Already Have an Account" />
+
+              <ThirdButton
+                title="Login"
+                classNames="w-100 my-3"
+                onClick={() => navigate("/login")}
+              />
+              {/* <Button onClick={() => setOpen(!open)}>show</Button> */}
+              <FullPageLoader open={open} setOpen={setOpen} />
+            </motion.form>
+          </div>
+        </div>
+      </div>
+      {/* <div className="full_body">
+        <motion.form
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.5 }}
+          className="login_form mx-2"
+          onSubmit={handleSubmit}
+        >
+          <Heading1 title="Register" classNames="text-center" />
+
+          <TextFields1
+            type="text"
+            classNames="mt-4"
+            placeholder="Full Name"
+            name="fullname"
+            value={data.fullname}
+            onChange={handleChange}
+          />
+          <TextFields1
+            type="text"
+            classNames="mt-4"
+            placeholder="User Name"
+            name="username"
+            value={data.username}
+            onChange={handleChange}
+          />
+          <TextFields1
+            type="text"
+            classNames="mt-4"
+            placeholder="Email Address"
+            name="email"
+            value={data.email}
+            onChange={handleChange}
+          />
+
+          <div className="relative">
+            <TextFields1
+              type={showPass ? "text" : "password"}
+              classNames="mt-4"
+              placeholder="Password"
+              name="password"
+              value={data.password}
+              onChange={handleChange}
+            />
+            <IconButton
+              className="password_visible"
+              onClick={() => setShowPass(!showPass)}
+            >
+              {showPass ? <VisibilityOffIcon /> : <VisibilityIcon />}
+            </IconButton>
+          </div>
+          <div className="relative">
+            <TextFields1
+              type={showPass2 ? "text" : "password"}
+              classNames="mt-4"
+              placeholder="Confrim Password"
+              name="cf_password"
+              value={data.cf_password}
+              onChange={handleChange}
+            />
+            <IconButton
+              className="password_visible"
+              onClick={() => setShowPass2(!showPass2)}
+            >
+              {showPass2 ? <VisibilityOffIcon /> : <VisibilityIcon />}
+            </IconButton>
+          </div>
+          <div className="d-flex justify-content-center mt-3 ">
+            {" "}
+            <FormControl>
+              <RadioGroup
+                row
+                // aria-labelledby="demo-row-radio-buttons-group-label"
+                // name="row-radio-buttons-group"
+                value={data.gender}
+                onChange={(e) => setData({ ...data, gender: e.target.value })}
+                // name="gender"
+              >
+                {" "}
+                <FormControlLabel
+                  value="male"
+                  control={
+                    <Radio
+                      sx={{
+                        color: `var(--700)`,
+                        "&.Mui-checked": {
+                          color: `var(--500)`,
+                        },
+                      }}
+                    />
+                  }
+                  label="Male"
+                />
+                <FormControlLabel
+                  value="female"
+                  control={
+                    <Radio
+                      sx={{
+                        color: `var(--700)`,
+                        "&.Mui-checked": {
+                          color: `var(--500)`,
+                        },
+                      }}
+                    />
+                  }
+                  label="Female"
+                />
+                <FormControlLabel
+                  value="other"
+                  control={
+                    <Radio
+                      sx={{
+                        color: `var(--700)`,
+                        "&.Mui-checked": {
+                          color: `var(--500)`,
+                        },
+                      }}
+                    />
+                  }
+                  label="Other"
+                />
+              </RadioGroup>
+            </FormControl>
+          </div>
+          <SecondaryButton
+            title="Register"
+            classNames="w-100 my-3"
+            type="submit"
+          />
+          <Text1 title="Already Have an Account" />
+
+          <ThirdButton
+            title="Login"
+            classNames="w-100 my-3"
+            onClick={() => navigate("/login")}
+          />
+          {/* <Button onClick={() => setOpen(!open)}>show</Button> */}
+      <FullPageLoader open={open} setOpen={setOpen} />
+      {/* </motion.form>
+      </div> */}{" "}
+    </>
   );
 };
 

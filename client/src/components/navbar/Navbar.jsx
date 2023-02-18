@@ -2,9 +2,9 @@ import React, { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import logo from "../../images/logo.png";
 import HomeIcon from "@mui/icons-material/Home";
-import ForumIcon from "@mui/icons-material/Forum";
+// import ForumIcon from "@mui/icons-material/Forum";
 import ExploreIcon from "@mui/icons-material/Explore";
-import heart from "../../images/heart.gif";
+// import heart from "../../images/heart.gif";
 import { SecondaryButton } from "../button/Buttons";
 import { useDispatch, useSelector } from "react-redux";
 import { logoutUser, nullSearchUser, searchUsers } from "../../redux/authSlice";
@@ -92,12 +92,12 @@ const Navbar = () => {
             >
               <HomeIcon />
             </li>
-            <li
+            {/* <li
               onClick={() => navigate("/message")}
               className="nav-item dropdown d-flex align-items-center me-4 pointer"
             >
               <ForumIcon />
-            </li>
+            </li> */}
             <li
               onClick={() => navigate("/discover")}
               className="nav-item dropdown d-flex align-items-center me-4 pointer"
@@ -105,13 +105,13 @@ const Navbar = () => {
               <ExploreIcon />
             </li>
 
-            <li
+            {/* <li
               onClick={() => navigate("/notify")}
               className="nav-item dropdown d-flex align-items-center me-3 pointer"
             >
-              {/* <FavoriteBorderIcon /> */}
+      
               <img src={heart} alt="hear" style={{ width: "30px" }} />
-            </li>
+            </li> */}
             <li
               onClick={() =>
                 navigate(`/profile/${UNSECURED(userData).user._id}`)
