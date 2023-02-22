@@ -14,6 +14,11 @@ import {
   noMoreaddHomePost,
 } from "../../redux/postSlice";
 import {
+  addmoreSavedPost,
+  getsavedPosts,
+  noMoresavedPost,
+} from "../../redux/savedPostSlice";
+import {
   addUserPost,
   getuserPost,
   noMoreaddUserPost,
@@ -25,6 +30,7 @@ export const useHomeFunctanility = (moreAllPost) => {
   const moreDiscoverPage = useSelector(
     (state) => state.discoverPost.moreDiscoverPage
   );
+  const moreSavedPage = useSelector((state) => state.savedPost.morePage);
   const moreUserPage = useSelector((state) => state.userPost.moreUserPage);
 
   const moreHomePage = useSelector((state) => state.post.morehomePages);
@@ -73,6 +79,33 @@ export const useHomeFunctanility = (moreAllPost) => {
     }
   };
 
+  const getSavedPosts = async (morePage) => {
+    if (morePage === true) {
+      const response = await axios.post(
+        `${Base_url}savedPost?page=${moreSavedPage}&limit=10`,
+        { userId: user._id }
+      );
+      if (response.status === 200) {
+        // console.log(response);
+        if (response.data.savedPosts.length === 0) {
+          dispatch({ type: noMoresavedPost });
+        } else {
+          dispatch({
+            type: addmoreSavedPost,
+            payload: response.data.savedPosts,
+          });
+        }
+      }
+    } else {
+      const response = await axios.post(`${Base_url}savedPost`, {
+        userId: user._id,
+      });
+      if (response.status === 200) {
+        dispatch({ type: getsavedPosts, payload: response.data.savedPosts });
+      }
+    }
+  };
+
   const getUserPosts = async (userId, moreUserPost) => {
     if (moreUserPost === true) {
       const response = await axios.get(
@@ -97,7 +130,7 @@ export const useHomeFunctanility = (moreAllPost) => {
 
   const savedPost = async (data) => {
     // console.log(user._id);
-    const response = await axios.post(`${Base_url}savedPost`, {
+    const response = await axios.post(`${Base_url}addsavedPost`, {
       postId: data._id,
       userId: user._id,
     });
@@ -106,5 +139,5 @@ export const useHomeFunctanility = (moreAllPost) => {
     }
   };
 
-  return { getPosts, getAllPosts, getUserPosts, savedPost };
+  return { getPosts, getAllPosts, getUserPosts, savedPost, getSavedPosts };
 };

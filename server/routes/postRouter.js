@@ -28,6 +28,6 @@ router.post("/updatedposts", upload.single("picture"), postCtrl.updatePost);
 router.post("/likePost", postCtrl.likePost);
 router.post("/unlikePost", postCtrl.unlikePost);
 router.post("/delposts", postCtrl.DeletePost);
-router.post("/savedPost", postCtrl.savedPost);
+// router.post("/savedPost", postCtrl.savedPost);
 
 module.exports = router;

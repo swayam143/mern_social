@@ -14,7 +14,6 @@ const Discover = () => {
   const morePage = true;
   const { getAllPosts } = useHomeFunctanility();
   const noMorePosts = useSelector((state) => state.discoverPost.noPost);
-  // console.log(allPosts);
 
   const fetchMoredata = () => {
     setTimeout(() => {

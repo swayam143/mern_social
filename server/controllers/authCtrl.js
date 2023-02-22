@@ -171,6 +171,84 @@ const authCtrl = {
       return res.status(500).json({ msg: err.message });
     }
   },
+  savedPost: async (req, res) => {
+    try {
+      const { postId, userId } = req.body;
+
+      const user = await Users.find({ _id: userId, saved: postId });
+      // console.log(user);
+
+      if (user.length > 0) {
+        const savedPost = await Users.findByIdAndUpdate(
+          userId,
+          {
+            $pull: { saved: postId },
+          },
+          { new: true }
+        )
+          .populate("saved")
+          .select("-password");
+        res.json({ msg: "Post UnSaved Successfully", savedPost });
+      } else {
+        const savedPost = await Users.findByIdAndUpdate(
+          userId,
+          {
+            $addToSet: { saved: postId },
+          },
+          { new: true }
+        )
+          .populate("saved")
+          .select("-password");
+        res.json({ msg: "Post Saved Successfully", savedPost });
+      }
+
+      // if (!savedPost)
+      //   return res.status(400).json({ msg: "This post foesnot exist" });
+    } catch (err) {
+      return res.status(500).json({ mssg: err.message });
+    }
+  },
+  getsavedPost: async (req, res) => {
+    const { userId } = req.body;
+    let { page, limit } = req.query;
+
+    if (!page) page = 1;
+    if (!limit) limit = 10;
+
+    const skip = (page - 1) * 10;
+    try {
+      const user = await Users.findById(userId).populate({
+        path: "saved",
+        populate: [
+          {
+            path: "user likes",
+            select: "username fullname picture",
+          },
+          {
+            path: "comments",
+            populate: {
+              path: "user",
+              select: "username fullname picture",
+            },
+          },
+        ],
+        options: {
+          skip,
+          limit,
+        },
+      });
+
+      if (!user) {
+        return res.status(404).send("User not found");
+      }
+
+      const savedPosts = user.saved;
+      // res.json(savedPosts);
+      res.json({ msg: "Successs", result: savedPosts.length, savedPosts });
+    } catch (err) {
+      return res.status(500).json({ msg: err.message });
+    }
+  },
 };
 
 // console.log(process.env.REFRESH_TOKEN_SECRET);

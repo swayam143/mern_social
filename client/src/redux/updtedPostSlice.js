@@ -5,7 +5,6 @@ import { Base_url } from "../constant";
 const initialState = {
   updatedPosts: [],
   deletePosts: null,
-  savedPost: [],
 };
 
 export const updatedSlice = createSlice({

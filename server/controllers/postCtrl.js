@@ -203,43 +203,43 @@ const postCtrl = {
       return res.status(500).json({ mssg: err.message });
     }
   },
-  savedPost: async (req, res) => {
-    try {
-      const { postId, userId } = req.body;
+  // savedPost: async (req, res) => {
+  //   try {
+  //     const { postId, userId } = req.body;
 
-      const user = await Users.find({ _id: userId, saved: postId });
-      // console.log(user);
+  //     const user = await Users.find({ _id: userId, saved: postId });
+  //     // console.log(user);
 
-      if (user.length > 0) {
-        const savedPost = await Users.findByIdAndUpdate(
-          userId,
-          {
-            $pull: { saved: postId },
-          },
-          { new: true }
-        )
-          .populate("saved")
-          .select("-password");
-        res.json({ msg: "Post UnSaved Successfully", savedPost });
-      } else {
-        const savedPost = await Users.findByIdAndUpdate(
-          userId,
-          {
-            $addToSet: { saved: postId },
-          },
-          { new: true }
-        )
-          .populate("saved")
-          .select("-password");
-        res.json({ msg: "Post Saved Successfully", savedPost });
-      }
+  //     if (user.length > 0) {
+  //       const savedPost = await Users.findByIdAndUpdate(
+  //         userId,
+  //         {
+  //           $pull: { saved: postId },
+  //         },
+  //         { new: true }
+  //       )
+  //         .populate("saved")
+  //         .select("-password");
+  //       res.json({ msg: "Post UnSaved Successfully", savedPost });
+  //     } else {
+  //       const savedPost = await Users.findByIdAndUpdate(
+  //         userId,
+  //         {
+  //           $addToSet: { saved: postId },
+  //         },
+  //         { new: true }
+  //       )
+  //         .populate("saved")
+  //         .select("-password");
+  //       res.json({ msg: "Post Saved Successfully", savedPost });
+  //     }
 
-      // if (!savedPost)
-      //   return res.status(400).json({ msg: "This post foesnot exist" });
-    } catch (err) {
-      return res.status(500).json({ mssg: err.message });
-    }
-  },
+  //     // if (!savedPost)
+  //     //   return res.status(400).json({ msg: "This post foesnot exist" });
+  //   } catch (err) {
+  //     return res.status(500).json({ mssg: err.message });
+  //   }
+  // },
 };
 
 module.exports = postCtrl;
