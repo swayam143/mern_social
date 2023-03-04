@@ -4,6 +4,7 @@ import discoverPostsSlice from "./discoverPostsSlice";
 import particularPostSlice from "./particularPostSlice";
 import postSlice from "./postSlice";
 import savedPostSlice from "./savedPostSlice";
+import socketSlice from "./socketSlice";
 import updatedSlice from "./updtedPostSlice";
 import userPostSlice from "./userPostSlice";
 
@@ -16,6 +17,7 @@ export const store = configureStore({
     discoverPost: discoverPostsSlice,
     userPost: userPostSlice,
     savedPost: savedPostSlice,
+    socket: socketSlice,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

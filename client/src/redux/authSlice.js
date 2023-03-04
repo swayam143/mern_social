@@ -42,28 +42,28 @@ export const authSlice = createSlice({
       }
       state.userData = SECURED(newUserData);
     },
-    savedPosts: (state, action) => {
-      const data = action.payload;
-      let newUserData = { ...UNSECURED(state.userData) };
+    // savedPosts: (state, action) => {
+    //   const data = action.payload;
+    //   let newUserData = { ...UNSECURED(state.userData) };
 
-      const findsavedPost = newUserData.user.saved.findIndex(
-        (item) => item._id === data._id
-      );
-      // console.log(findFollowing);
-      if (findsavedPost !== -1) {
-        newUserData.user = {
-          ...newUserData.user,
-          saved: newUserData.user.saved.filter((x) => x._id !== data._id),
-        };
-      } else {
-        newUserData.user = {
-          ...newUserData.user,
-          saved: [...newUserData.user.saved, data],
-        };
-      }
-      state.userData = SECURED(newUserData);
-      SetSession(StoredVariables.logindata, SECURED(newUserData));
-    },
+    //   const findsavedPost = newUserData.user.saved.findIndex(
+    //     (item) => item._id === data._id
+    //   );
+    //   // console.log(findFollowing);
+    //   if (findsavedPost !== -1) {
+    //     newUserData.user = {
+    //       ...newUserData.user,
+    //       saved: newUserData.user.saved.filter((x) => x._id !== data._id),
+    //     };
+    //   } else {
+    //     newUserData.user = {
+    //       ...newUserData.user,
+    //       saved: [...newUserData.user.saved, data],
+    //     };
+    //   }
+    //   state.userData = SECURED(newUserData);
+    //   SetSession(StoredVariables.logindata, SECURED(newUserData));
+    // },
     logoutUser: (state) => {
       ClearSession();
       state.userData = null;
@@ -83,7 +83,7 @@ export const {
   searchUsers,
   nullSearchUser,
   followsUser,
-  savedPosts,
+  // savedPosts,
 } = authSlice.actions;
 
 export default authSlice.reducer;

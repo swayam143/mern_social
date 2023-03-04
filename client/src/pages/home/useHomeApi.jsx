@@ -2,7 +2,7 @@ import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { Base_url } from "../../constant";
 import { UNSECURED } from "../../constant/Util";
-import { savedPosts } from "../../redux/authSlice";
+import { savedPosts } from "../../redux/savedPostSlice";
 import {
   adddiscoverPost,
   discoverPost,

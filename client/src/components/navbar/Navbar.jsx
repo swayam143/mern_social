@@ -10,7 +10,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { logoutUser, nullSearchUser, searchUsers } from "../../redux/authSlice";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import LogoutIcon from "@mui/icons-material/Logout";
-import { UNSECURED } from "../../constant/Util";
+import { Reload, UNSECURED } from "../../constant/Util";
 import "./nav.css";
 import { useEffect } from "react";
 import { POST } from "../../constant/RequestAuthService";
@@ -27,6 +27,7 @@ const Navbar = () => {
 
   const logout = () => {
     dispatch({ type: logoutUser });
+    // Reload();
   };
 
   const navigate = useNavigate();

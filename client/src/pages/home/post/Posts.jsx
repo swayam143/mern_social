@@ -78,16 +78,7 @@ const Posts = ({ discover, onlyUserPost, allPosts, post, savedPosts }) => {
   const { handleEditPost, HandleLike, handleComment, deletePost } =
     usePostFunctanilty(setDrop, setEdit, setPostData, content, setContent);
 
-  // useEffect(() => {
-  //   typeof discover === "undefined" &&
-  //     typeof onlyUserPost === "undefined" &&
-  //     allPosts === null &&
-  //     getPosts(user);
-  // }, []); // eslint-disable-line react-hooks/exhaustive-deps
-
-  // useEffect(() => {
-  //   discover === true && allPosts === null && getAllPosts();
-  // }, [discover]); // eslint-disable-line react-hooks/exhaustive-deps
+  const SavedItems = useSelector((state) => state.savedPost.savedPost);
 
   const navigate = useNavigate();
 
@@ -214,7 +205,7 @@ const Posts = ({ discover, onlyUserPost, allPosts, post, savedPosts }) => {
                   </div>
                   <div className="saved_btn_div">
                     <div onClick={() => savedPost(data)} className="icon_div">
-                      {user.saved.find((item) => item._id === data._id) ? (
+                      {SavedItems?.find((item) => item._id === data._id) ? (
                         <BookmarkIcon sx={{ color: "red" }} />
                       ) : (
                         <BookmarkBorderIcon />
